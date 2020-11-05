@@ -1,0 +1,14 @@
+﻿'2D_Game_Engine.exe' (Win32): Loaded 'C:\Users\Maxime\Documents\GitHub\2D_Game_Engine\2D_Game_Engine\x64\Debug\2D_Game_Engine.exe'. Symbols loaded.
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\ntdll.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\kernel32.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\KernelBase.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\shell32.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\msvcp_win.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\ucrtbase.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\user32.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\win32u.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\gdi32.dll'. 
+'2D_Game_Engine.exe' (Win32): Loaded 'C:\Windows\System32\gdi32full.dll'. 
+The thread 0xdb8 has exited with code -1073741515 (0xc0000135).
+The thread 0x14ec has exited with code -1073741515 (0xc0000135).
+The program '[13216] 2D_Game_Engine.exe' has exited with code -1073741515 (0xc0000135) 'A dependent dll was not found'.
