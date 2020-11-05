@@ -29,6 +29,7 @@ int main( int argc, char* args[] )
 		}
 		else
 		{
+			//oya
 			//Get window surface
 			screenSurface = SDL_GetWindowSurface( window );
 
