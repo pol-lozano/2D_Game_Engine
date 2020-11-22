@@ -21,6 +21,7 @@ public:
 
 	//The window renderer
 	static SDL_Renderer* gRenderer;
+	static SDL_Event event;
 private:
 	bool isRunning;
 

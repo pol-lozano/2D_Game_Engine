@@ -1,4 +1,5 @@
 #include "Core.h"
+#include "Timer.h"
 
 Core* core = nullptr;
 

@@ -1,8 +1,12 @@
 #include "Core.h"
 #include "TextureHandler.h"
-#include "ECS/Components.h
+#include "ECS/Components.h"
+#include "Vector2.h"
 
 SDL_Renderer* Core::gRenderer = nullptr;
+//Event handler
+SDL_Event Core::event;
+
 Manager manager;
 
 auto& player(manager.addEntity());
@@ -76,36 +80,36 @@ void Core::init(const char *title, int width, int height)
 	}
 	isRunning = success;
 
-	player.addComponent<PositionComponent>();
+	//ECS
+	player.addComponent<TransformComponent>();
 	player.addComponent<SpriteComponent>("assets/dot.bmp");
+	player.addComponent<KeyboardController>();
 }
 
 
 void Core::handleEvents()
 {
-	//Event handler
-	SDL_Event e;
-	SDL_PollEvent(&e);
-	switch (e.type) {
+	
+	SDL_PollEvent(&event);
+	switch (event.type) {
 	case SDL_QUIT:
 		isRunning = false;
 		break;
 	default:
 		break;
 	}
-
 }
 
 void Core::update()
 {
 	//Update entities
 	manager.refresh();
-	manager.update();
+	manager.update();	
 }
 
 void Core::render()
 {
-	//Clear render
+	//Clear screen
 	SDL_RenderClear(gRenderer);
 	manager.draw();
 	//Update screen
@@ -120,7 +124,6 @@ void Core::close()
 
 	//Destroy window and renderer
 	SDL_DestroyWindow(gWindow);
-
 	SDL_DestroyRenderer(gRenderer);
 	gWindow = NULL;
 	gRenderer = NULL;
