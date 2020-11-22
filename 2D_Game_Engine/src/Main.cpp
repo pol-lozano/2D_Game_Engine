@@ -1,17 +1,55 @@
-//Using SDL and standard IO
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <stdio.h>
-#include <string>
-#include <sstream>
-#include <fstream>
+#include "Core.h"
 
-#include "Sprite.h"
-#include "Timer.h"
-#include "Entity.h"
-#include "Tile.h"
+Core* core = nullptr;
 
+int main(int argc, char* args[]) {
+
+	const int FPS = 60;
+	const int TICKS_PER_FRAME = 1000 / FPS;
+
+	//Current time start time
+	Timer fpsTimer;
+	//The frames per second cap timer
+	Timer capTimer;
+
+	//In memory text stream
+	//std::stringstream timeText;
+
+	//Start counting frames per second
+	int countedFrames = 0;
+	fpsTimer.start();
+
+	core = new Core();
+	core->init("GameEngine", 640, 480);
+
+	while (core->running()) {
+
+		//Start cap timer
+		capTimer.start();
+
+		core->handleEvents();
+		core->update();
+		core->render();
+
+		//Calculate and correct fps
+		float avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.f);
+		if (avgFPS > 2000000)
+		{
+			avgFPS = 0;
+		}
+
+		++countedFrames;
+
+		//If frame finished early
+		int frameTicks = capTimer.getTicks();
+		if (frameTicks < TICKS_PER_FRAME)
+			SDL_Delay(TICKS_PER_FRAME - frameTicks);
+	}
+
+	core->close();
+	return 0;
+}
+/*
 
 // Constants
 const char* GAME_TITLE = "Test";
@@ -393,7 +431,7 @@ int main(int argc, char* args[])
 							//Do something
 							break;
 						}
-					}*/
+					}
 					const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 					if (currentKeyStates[SDL_SCANCODE_UP])
 					{
@@ -478,3 +516,4 @@ int main(int argc, char* args[])
 	}
 	return 0;
 }
+*/
