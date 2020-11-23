@@ -50,8 +50,8 @@ SDL_Texture* TextureHandler::loadFromRenderedText(std::string textureText, SDL_C
 }
 #endif
 
-void TextureHandler::draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest)
+void TextureHandler::draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip)
 {
-	SDL_RenderCopy(Core::gRenderer, tex, &src, &dest);
+	SDL_RenderCopyEx(Core::gRenderer, tex, &src, &dest,NULL,NULL,flip);
 }
 

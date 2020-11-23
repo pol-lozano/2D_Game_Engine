@@ -11,8 +11,7 @@ public:
 	//Creates image from font string
 	static SDL_Texture* loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font);
 #endif
-
 	//Draws texture
-	static void draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest);
+	static void draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest,SDL_RendererFlip flip);
 };
 

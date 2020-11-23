@@ -19,33 +19,47 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Collision.cpp" />
     <ClCompile Include="src\Core.cpp" />
+    <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\TextureHandler.cpp" />
     <ClCompile Include="src\Vector2.cpp" />
+    <ClCompile Include="src\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\dirt.bmp" />
     <Image Include="assets\dot.bmp" />
+    <Image Include="assets\grass.bmp" />
     <Image Include="assets\hello_world.bmp" />
+    <Image Include="assets\player_anims.png" />
+    <Image Include="assets\player_idle.png" />
     <Image Include="assets\tiles.png" />
+    <Image Include="assets\water.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Collision.h" />
+    <ClInclude Include="src\ECS\Animation.h" />
+    <ClInclude Include="src\ECS\ColliderComponent.h" />
     <ClInclude Include="src\ECS\Components.h" />
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\KeyboardController.h" />
+    <ClInclude Include="src\ECS\TileComponent.h" />
     <ClInclude Include="src\ECS\TransformComponent.h" />
     <ClInclude Include="src\ECS\SpriteComponent.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\TextureHandler.h" />
     <ClInclude Include="src\Vector2.h" />
+    <ClInclude Include="src\Tilemap.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\lazy.map" />
+    <None Include="assets\pyxel.map" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

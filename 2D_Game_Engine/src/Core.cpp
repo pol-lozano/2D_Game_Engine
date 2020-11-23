@@ -2,20 +2,30 @@
 #include "TextureHandler.h"
 #include "ECS/Components.h"
 #include "Vector2.h"
+#include "Collision.h"
+#include "Tilemap.h"
+
+Tilemap* tilemap;
+Manager manager;
 
 SDL_Renderer* Core::gRenderer = nullptr;
-//Event handler
 SDL_Event Core::event;
 
-Manager manager;
+SDL_Rect Core::camera = { 0, 0, 640, 480 };
+
+bool Core::isRunning = false;
 
 auto& player(manager.addEntity());
 
-Core::Core(){}
 
-Core::~Core(){}
 
-void Core::init(const char *title, int width, int height)
+Core::Core()
+{}
+
+Core::~Core()
+{}
+
+void Core::init(const char* title, int width, int height)
 {
 	// Initialization flag
 	bool success = true;
@@ -55,7 +65,7 @@ void Core::init(const char *title, int width, int height)
 				success = false;
 			}
 			else
-			{			
+			{
 				printf("Renderer created!\n");
 
 				//Initialize renderer color
@@ -78,18 +88,34 @@ void Core::init(const char *title, int width, int height)
 			}
 		}
 	}
+
 	isRunning = success;
 
+	tilemap = new Tilemap("assets/terrain_ss.png", 1, 32);
+
 	//ECS
+	//Tilemap
+	tilemap->loadMap("assets/map.map", 25, 20);
+
+	//Player
 	player.addComponent<TransformComponent>();
-	player.addComponent<SpriteComponent>("assets/dot.bmp");
+	player.addComponent<SpriteComponent>("assets/player_anims.png", true);
 	player.addComponent<KeyboardController>();
+	player.addComponent<ColliderComponent>("player");
+	player.addGroup(groupPlayers);
+
 }
+
+auto& tiles(manager.getGroup(Core::groupMap));
+auto& players(manager.getGroup(Core::groupPlayers));
+auto& enemies(manager.getGroup(Core::groupEnemies));
+//Colliders in the game
+auto& colliders(manager.getGroup(Core::groupColliders));
 
 
 void Core::handleEvents()
 {
-	
+
 	SDL_PollEvent(&event);
 	switch (event.type) {
 	case SDL_QUIT:
@@ -102,16 +128,66 @@ void Core::handleEvents()
 
 void Core::update()
 {
+	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+	Vector2 playerPos = player.getComponent<TransformComponent>().position;
+	
 	//Update entities
 	manager.refresh();
-	manager.update();	
+	manager.update();
+
+	//Check player collision
+	for (auto& c : colliders)
+	{
+		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+		if (Collision::AABB(cCol, playerCol))
+		{
+			//Force player back to previous position if it collides
+			player.getComponent<TransformComponent>().position = playerPos;
+		}
+	}
+
+	//Set camera position
+	camera.x =  player.getComponent<TransformComponent>().position.x - 320;
+	camera.y = player.getComponent<TransformComponent>().position.y - 240;
+	
+	if (camera.x < 0)
+		camera.x = 0;
+	if (camera.y < 0)
+		camera.y = 0;
+	if (camera.x > camera.w)
+		camera.x = camera.w;
+	if (camera.y > camera.h)
+		camera.y = camera.h;
+
+	
 }
 
 void Core::render()
 {
 	//Clear screen
 	SDL_RenderClear(gRenderer);
-	manager.draw();
+
+	//Draw all entities to screen in order
+	for (auto& t : tiles)
+	{
+		t->draw();
+	}
+
+	for (auto& c : colliders)
+	{
+		c->draw();
+	}
+
+	for (auto& p : players)
+	{
+		p->draw();
+	}
+
+	for (auto& e : enemies)
+	{
+		e->draw();
+	}
+
 	//Update screen
 	SDL_RenderPresent(gRenderer);
 }
