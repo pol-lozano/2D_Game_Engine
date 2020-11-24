@@ -1,8 +1,8 @@
 #include "EntityManager.h"
 
-	void EntityManager::update(){
+	void EntityManager::update(float dt){
 		//Update all entities
-		for (auto& e : entities) e->update();
+		for (auto& e : entities) e->update(dt);
 	}
 
 void EntityManager::draw(){

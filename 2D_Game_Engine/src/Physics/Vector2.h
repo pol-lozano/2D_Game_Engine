@@ -35,11 +35,11 @@ struct Vector2
 		return v1;
 	}
 
-	inline Vector2 operator*(const int& scalar) const {
+	inline Vector2 operator*(const float& scalar) const {
 		return Vector2(x * scalar, y * scalar);
 	}
 
-	inline Vector2 operator/(const int& d) const {
+	inline Vector2 operator/(const float& d) const {
 		return (d != 0 ? Vector2(x/d, y/d) : Vector2());
 	}
 	

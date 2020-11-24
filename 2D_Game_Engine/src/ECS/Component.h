@@ -10,6 +10,6 @@ public:
 	Entity* entity;
 
 	virtual bool init() { return true; }
-	virtual void update() {}
+	virtual void update(float dt) {}
 	virtual void draw() {}
 };

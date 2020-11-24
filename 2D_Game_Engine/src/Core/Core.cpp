@@ -42,13 +42,13 @@ void Core::init()
 	//Create entity
 	entity = new Entity(); 
 	auto sprite = entity->addComponent<Sprite>(renderer, "test");
-	entity->addComponent<Rigidbody2D>(0);
+	entity->addComponent<Rigidbody2D>();
 	entity->addComponent<BoxCollider2D>(renderer, sprite.getWidth(), sprite.getHeight());
 
 	entity1 = new Entity();
 	entity1->getComponent<Transform>().position = Vector2(200, 100);
 	auto sprite1 = entity1->addComponent<Sprite>(renderer, "test");
-	entity1->addComponent<Rigidbody2D>(0);
+	entity1->addComponent<Rigidbody2D>();
 	entity1->addComponent<BoxCollider2D>(renderer, sprite1.getWidth(), sprite1.getHeight());
 	
 	manager->addEntity(entity);
@@ -60,6 +60,7 @@ void Core::init()
 
 void Core::events()
 {
+	//Handle events
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
@@ -72,11 +73,10 @@ void Core::events()
 	}
 }
 
-void Core::update()
+void Core::update(float dt)
 {
-	//Update all entities
 	manager->refresh();
-	manager->update();
+	manager->update(dt);
 }
 
 void Core::render()

@@ -18,7 +18,7 @@ public:
 	void clean();
 
 	void events();
-	void update();
+	void update(float dt);
 	void render();
 
 	//Singleton

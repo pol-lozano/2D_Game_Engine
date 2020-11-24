@@ -27,9 +27,9 @@ public:
 		SDL_RenderDrawRect(rTarget, &box);
 	}
 
-	void update() override final {
-		box.x = transform->position.x;
-		box.y = transform->position.y;
+	void update(float dt) override final {
+		box.x = static_cast<int>(transform->position.x);
+		box.y = static_cast<int>(transform->position.y);
 	}
 
 	std::string getCollisionTag() const {

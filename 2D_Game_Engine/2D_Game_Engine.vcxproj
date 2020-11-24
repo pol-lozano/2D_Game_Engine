@@ -24,6 +24,7 @@
     <ClCompile Include="src\Physics\Collision.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Timer\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\dirt.bmp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\Physics\Vector2.h" />
+    <ClInclude Include="src\Timer\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />

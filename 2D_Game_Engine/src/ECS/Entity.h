@@ -55,9 +55,9 @@ public:
 	//Remove entity
 	inline void destroy() { active = false; }
 
-	inline void update() {
+	inline void update(float dt) {
 		//Update all components
-		for (auto& c : components) c->update();
+		for (auto& c : components) c->update(dt);
 	}
 
 	inline void draw() {

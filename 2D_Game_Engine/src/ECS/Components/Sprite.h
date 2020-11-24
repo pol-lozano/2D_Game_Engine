@@ -36,7 +36,7 @@ public:
 		SDL_RenderCopyEx(rTarget, texture, &srcRect, &dstRect, transform->rotation, NULL, flip);
 	}
 
-	void update() override final {
+	void update(float dt) override final {
 		dstRect.x = static_cast<int>(transform->position.x);
 		dstRect.y = static_cast<int>(transform->position.y);
 		dstRect.w = static_cast<int>(width*transform->scale.x);

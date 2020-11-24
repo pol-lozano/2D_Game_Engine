@@ -8,7 +8,7 @@ public:
 	~EntityManager() = default;
 
 	void draw();
-	void update();
+	void update(float dt);
 	void refresh();
 
 	void addEntity(Entity* entity);
