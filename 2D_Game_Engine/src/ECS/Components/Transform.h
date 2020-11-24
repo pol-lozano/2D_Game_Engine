@@ -29,4 +29,10 @@ public:
 	void translate(const Vector2 v) {
 		position += v;
 	}
+
+	//Not sure if unity does it like this??
+	void moveTowards(const Vector2 dest, float time) {
+		position.lerp(position, dest, time);
+	}
+
 };

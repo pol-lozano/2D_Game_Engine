@@ -54,6 +54,11 @@ struct Vector2
 		this->y = 1;
 		return *this;
 	}
+	inline Vector2& lerp(Vector2 source, Vector2 target, float time) {
+		this->x = source.x + time * (target.x - source.x);
+		this->y = source.y + time * (target.y - source.y);
+		return *this;
+	}
 
 	friend std::ostream& operator<<(std::ostream& stream, const Vector2& v) {
 		stream << "(" << v.x << "," << v.y << ")";

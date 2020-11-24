@@ -44,15 +44,15 @@ void Core::init()
 	auto sprite = entity->addComponent<Sprite>(renderer, "test");
 	entity->addComponent<Rigidbody2D>();
 	entity->addComponent<BoxCollider2D>(renderer, sprite.getWidth(), sprite.getHeight());
-
+/*
 	entity1 = new Entity();
 	entity1->getComponent<Transform>().position = Vector2(200, 100);
 	auto sprite1 = entity1->addComponent<Sprite>(renderer, "test");
 	entity1->addComponent<Rigidbody2D>();
 	entity1->addComponent<BoxCollider2D>(renderer, sprite1.getWidth(), sprite1.getHeight());
-	
+	*/
 	manager->addEntity(entity);
-	manager->addEntity(entity1);
+	//manager->addEntity(entity1);
 
 	clearColor = DARK;
 	running = true;

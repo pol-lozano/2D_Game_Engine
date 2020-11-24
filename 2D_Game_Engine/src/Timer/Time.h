@@ -1,11 +1,9 @@
 #pragma once
 #include <SDL.h>
+constexpr float FPS_TARGET = 60;
 
 class Time {
 public:
-	Time();
-	~Time();
-
 	void tick();
 
 	inline float getDeltatime() { return m_deltaTime; }
