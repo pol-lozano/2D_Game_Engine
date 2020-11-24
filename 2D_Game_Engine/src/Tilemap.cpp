@@ -1,11 +1,11 @@
 #include "Tilemap.h"
-#include "Core.h"
+#include "Core/Core.h"
 #include <fstream>
 #include "ECS/ECS.h"
-#include "ECS/Components.h"
+#include "ECS/Components/Components.h"
 
 //Manager defined in core.cpp
-extern Manager manager;
+extern EntityManager manager;
 
 Tilemap::Tilemap(const char* mp, int ms, int ts) : mapPath(mp), mapScale(ms), tileSize(ts)
 {
@@ -47,8 +47,8 @@ void Tilemap::loadMap(std::string path, int sizeX, int sizeY)
 			if (c == '1')
 			{
 				auto& tcol(manager.addEntity());
-				tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, scaledSize);
-				tcol.addGroup(Core::groupColliders);
+				//tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, scaledSize);
+				
 			}
 			mapFile.ignore();
 		}
@@ -60,6 +60,5 @@ void Tilemap::loadMap(std::string path, int sizeX, int sizeY)
 void Tilemap::addTile(int srcX, int srcY, int posX, int posY)
 {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, posX, posY, tileSize, mapScale, mapPath);
-	tile.addGroup(Core::groupMap);
+	//tile.addComponent<TileComponent>(srcX, srcY, posX, posY, tileSize, mapScale, mapPath);
 }
