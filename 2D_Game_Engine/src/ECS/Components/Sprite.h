@@ -17,6 +17,7 @@ public:
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
 		texture = AssetManager::get().getTexture(textureID);
+		//Read texture size
 		SDL_QueryTexture(texture, NULL, NULL, &width, &height);
 
 		dstRect.x = transform->position.x;

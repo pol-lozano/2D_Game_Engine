@@ -26,7 +26,7 @@ public:
 		m_acceleration.x = (m_force.x + m_friction.x) / m_mass;
 		m_acceleration.y = m_gravity + m_force.y / m_mass;
 		m_velocity = m_acceleration * dt;
-		transform->translate(m_velocity * 10);
+		transform->translate(m_velocity);
 	}
 
 	//Gravity & Mass

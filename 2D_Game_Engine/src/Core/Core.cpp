@@ -5,6 +5,7 @@
 #include "../ECS/Components/BoxCollider2D.h"
 #include "../ECS/Components/Rigidbody2D.h"
 #include "../ECS/Components/Transform.h"
+#include "../Physics/Collision.h"
 
 Core* Core::s_instance = nullptr;
 
@@ -34,25 +35,27 @@ void Core::init()
 	renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 	if (!renderer) std::cerr << SDL_GetError() << std::endl;
 
-	AssetManager::get().loadTexture("test", "assets/dot.bmp");
-	
+	AssetManager::get().loadTexture("test", "assets/doggo.png");
+	AssetManager::get().loadTexture("test2", "assets/hello_world.bmp");
+
 	//Create manager
 	manager = new EntityManager();
 
 	//Create entity
 	entity = new Entity(); 
 	auto sprite = entity->addComponent<Sprite>(renderer, "test");
-	entity->addComponent<Rigidbody2D>();
+	entity->getComponent<Transform>().scale = Vector2(2,2);
+	entity->addComponent<Rigidbody2D>().setForceX(5);
 	entity->addComponent<BoxCollider2D>(renderer, sprite.getWidth(), sprite.getHeight());
-/*
+	
 	entity1 = new Entity();
 	entity1->getComponent<Transform>().position = Vector2(200, 100);
-	auto sprite1 = entity1->addComponent<Sprite>(renderer, "test");
-	entity1->addComponent<Rigidbody2D>();
+	auto sprite1 = entity1->addComponent<Sprite>(renderer, "test2");
+	//entity1->addComponent<Rigidbody2D>();
 	entity1->addComponent<BoxCollider2D>(renderer, sprite1.getWidth(), sprite1.getHeight());
-	*/
+	
 	manager->addEntity(entity);
-	//manager->addEntity(entity1);
+	manager->addEntity(entity1);
 
 	clearColor = DARK;
 	running = true;
@@ -77,6 +80,13 @@ void Core::update(float dt)
 {
 	manager->refresh();
 	manager->update(dt);
+
+	auto v = entity->getComponent<Transform>().position;
+	std::cout << v << std::endl;;
+
+	if (Collision::AABB(entity->getComponent<BoxCollider2D>(), entity1->getComponent<BoxCollider2D>())){
+		entity->getComponent<Rigidbody2D>().setForceX(-10);
+	}
 }
 
 void Core::render()
