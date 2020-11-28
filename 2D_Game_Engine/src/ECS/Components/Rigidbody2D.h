@@ -4,7 +4,7 @@
 #include "../Component.h"
 
 constexpr float UNI_MASS = 1.0f;
-constexpr float GRAVITY = 9.8f;
+constexpr float GRAVITY = 0; //9.8f;
 
 class Rigidbody2D : public Component {
 public:

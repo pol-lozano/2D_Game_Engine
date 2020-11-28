@@ -100,6 +100,12 @@
     <ClInclude Include="src\Timer\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ECS\Components\CharacterController2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />

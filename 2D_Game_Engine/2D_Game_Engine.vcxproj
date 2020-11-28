@@ -38,6 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
+    <ClInclude Include="src\ECS\Components\CharacterController2D.h" />
+    <ClInclude Include="src\ECS\Components\InputHandler.h" />
     <ClInclude Include="src\ECS\Components\Rigidbody2D.h" />
     <ClInclude Include="src\ECS\EntityManager.h" />
     <ClInclude Include="src\ECS\Component.h" />

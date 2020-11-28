@@ -37,12 +37,17 @@ public:
 		return camera;
 	}
 
+	inline SDL_Event* getEvent() {
+		return event;
+	}
+
 	inline SDL_Renderer* getRenderer(){
 		return renderer;
 	}
 
 private:
 	EntityManager* manager;
+	SDL_Event* event;
 
 	bool running;
 	SDL_Window* window;

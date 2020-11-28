@@ -11,14 +11,14 @@ int main(int argc, char* args[]) {
 
 
 	while (core.isRunning()) {	
-		//Uint64 frameStart = SDL_GetPerformanceCounter();
+	    Uint64 frameStart = SDL_GetPerformanceCounter();
 		core.events();
-		core.update(1);
-		//time.tick();
+		core.update(time.getDeltatime());
+		time.tick();
 		core.render();
-		//Uint64 frameEnd = SDL_GetPerformanceCounter();
+		Uint64 frameEnd = SDL_GetPerformanceCounter();
 
-		//float elapsed = (frameEnd - frameStart) / (float)SDL_GetPerformanceFrequency();
+		float elapsed = (frameEnd - frameStart) / (float)SDL_GetPerformanceFrequency();
 		//std::cout << "FPS: " << std::to_string(1.0f / elapsed) << std::endl;
 	}
 

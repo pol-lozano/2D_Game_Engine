@@ -7,7 +7,7 @@ struct Vector2
 
 	Vector2(){
 		this->x = 0;
-		this->y =   0;
+		this->y = 0;
 	}
 
 	Vector2(float x, float y){
@@ -35,8 +35,8 @@ struct Vector2
 		return v1;
 	}
 
-	inline Vector2 operator*(const float& scalar) const {
-		return Vector2(x * scalar, y * scalar);
+	inline Vector2 operator*(const float& f) const {
+		return Vector2(x * f, y * f);
 	}
 
 	inline Vector2 operator/(const float& d) const {
@@ -54,6 +54,7 @@ struct Vector2
 		this->y = 1;
 		return *this;
 	}
+
 	inline Vector2& lerp(Vector2 source, Vector2 target, float time) {
 		this->x = source.x + time * (target.x - source.x);
 		this->y = source.y + time * (target.y - source.y);
