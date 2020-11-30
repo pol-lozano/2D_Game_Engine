@@ -22,7 +22,7 @@ public:
 
 	void draw() override final {
 		SDL_SetRenderDrawColor(rTarget, 255, 214, 85, 255);
-		//SDL_RenderDrawRect(rTarget, &box);
+		SDL_RenderDrawRect(rTarget, &box);
 	}
 
 	void update(float dt) override final {

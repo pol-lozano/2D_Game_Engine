@@ -3,8 +3,8 @@
 #include "../ECS/EntityManager.h"
 
 struct ColliderComponent;
-constexpr int SCREEN_WIDTH = 1280;
-constexpr int SCREEN_HEIGHT = 720;
+constexpr int SCREEN_WIDTH = 640;
+constexpr int SCREEN_HEIGHT = 480;
 constexpr SDL_Color DARK = { 30,30,30,255 };
 
 class Core

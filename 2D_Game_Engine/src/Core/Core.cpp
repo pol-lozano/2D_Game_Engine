@@ -90,7 +90,6 @@ void Core::events()
 		}
 	}
 }
-
 void Core::update(float dt)
 {
 	auto v = entity->getComponent<Transform>().position;
@@ -100,19 +99,17 @@ void Core::update(float dt)
 	manager->update(dt);
 
 	if (Collision::AABB(entity->getComponent<BoxCollider2D>(), entity1->getComponent<BoxCollider2D>())){
-		//entity->getComponent<Rigidbody2D>().setForceX(-10);
 		entity->getComponent<Transform>().position.x = v.x;
 	}
 
 	if (Collision::AABB(entity->getComponent<BoxCollider2D>(), entity1->getComponent<BoxCollider2D>())) {
-		//entity->getComponent<Rigidbody2D>().setForceX(-10);
 		entity->getComponent<Transform>().position.y = v.y;
 	}
-
+	/*
 	if (Collision::AABB(entity->getComponent<BoxCollider2D>(), entity2->getComponent<BoxCollider2D>())) {
 		//entity->getComponent<Rigidbody2D>().setForceX(-10);
 		entity->getComponent<Transform>().position = v;
-	}
+	}*/
 }
 
 void Core::render()

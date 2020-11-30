@@ -4,7 +4,7 @@
 #include "../Component.h"
 
 constexpr float UNI_MASS = 1.0f;
-constexpr float GRAVITY = 0; //9.8f;
+constexpr float GRAVITY = 0;//9.8f;
 
 class Rigidbody2D : public Component {
 public:
@@ -25,6 +25,13 @@ public:
 	void update(float dt) override final {
 		m_acceleration.x = (m_force.x + m_friction.x) / m_mass;
 		m_acceleration.y = m_gravity + m_force.y / m_mass;
+
+		//Verlet integration
+		//Vector2 curPos = transform->position;
+		//transform->translate(curPos - transform->oldPosition + m_acceleration * (dt * dt));
+		//transform->oldPosition = curPos;
+
+		//Test
 		m_velocity = m_acceleration * dt;
 		transform->translate(m_velocity);
 	}
