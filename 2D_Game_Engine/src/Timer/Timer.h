@@ -1,30 +1,16 @@
 #pragma once
 #include <SDL.h>
 
-class Timer
+struct Timer
 {
-public:
-	//Constructor
-	Timer();
+	Uint64 previous_ticks{};
+	double elapsed_seconds{};
 
-	void start();
-	void stop();
-	void pause();
-	void unpause();
-
-	//Gets the timer's time
-	Uint32 getTicks();
-
-	//Checks the status of the timer
-	bool isStarted();
-	bool isPaused();
-private:
-	//Time when timer started
-	Uint32 m_StartTicks;
-	//Ticks stored when timer was paused
-	Uint32 m_PausedTicks;
-	//Status
-	bool m_Paused;
-	bool m_Started;
+	void tick() {
+		const Uint64 current_ticks{ SDL_GetPerformanceCounter() };
+		const Uint64 delta{ current_ticks - previous_ticks };
+		previous_ticks = current_ticks;
+		static const Uint64 TICKS_PER_SECOND{ SDL_GetPerformanceFrequency() };
+		elapsed_seconds = delta / static_cast<float>(TICKS_PER_SECOND);
+	}
 };
-

@@ -30,9 +30,6 @@
     <ClCompile Include="src\Physics\Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Timer\Time.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\dot.bmp">
@@ -56,7 +53,7 @@
     <Image Include="assets\player_idle.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\player_anims.png">
+    <Image Include="assets\player.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -97,13 +94,16 @@
     <ClInclude Include="src\ECS\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Timer\Time.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ECS\Components\CharacterController2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -111,7 +111,6 @@
     <Font Include="assets\lazy.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\lazy.map" />
     <None Include="assets\pyxel.map" />
   </ItemGroup>
 </Project>

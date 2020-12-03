@@ -4,18 +4,12 @@
 #include "../Component.h"
 
 constexpr float UNI_MASS = 1.0f;
-constexpr float GRAVITY = 0;//9.8f;
+constexpr float GRAVITY = 0; // 9.8f;
 
 class Rigidbody2D : public Component {
 public:
-	Rigidbody2D() {
-		m_mass = UNI_MASS;
-		m_gravity = GRAVITY;
-		m_acceleration.zero();
-		m_velocity.zero();
-		m_force.zero();
-		m_friction.zero();
-	}
+	Rigidbody2D() = default;
+	virtual ~Rigidbody2D() = default;
 	
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
@@ -25,14 +19,8 @@ public:
 	void update(float dt) override final {
 		m_acceleration.x = (m_force.x + m_friction.x) / m_mass;
 		m_acceleration.y = m_gravity + m_force.y / m_mass;
-
-		//Verlet integration
-		//Vector2 curPos = transform->position;
-		//transform->translate(curPos - transform->oldPosition + m_acceleration * (dt * dt));
-		//transform->oldPosition = curPos;
-
-		//Test
 		m_velocity = m_acceleration * dt;
+
 		transform->translate(m_velocity);
 	}
 
@@ -44,6 +32,7 @@ public:
 	inline void setForce(const Vector2 f) { m_force = f; }
 	inline void setForceX(const float fx) { m_force.x = fx; }
 	inline void setForceY(const float fy) { m_force.y = fy; }
+	inline void setInertialForce(const Vector2 f) { m_force *= f; }
 	inline void zeroForce() { m_force.zero(); }
 
 	//Friction
@@ -58,12 +47,12 @@ public:
 private:
 	Transform* transform = nullptr;
 
-	float m_mass;
-	float m_gravity;
+	float m_mass = UNI_MASS;
+	float m_gravity = GRAVITY;
 
-	Vector2 m_force;
-	Vector2 m_friction;
+	Vector2 m_force = Vector2();
+	Vector2 m_friction = Vector2();
 
-	Vector2 m_velocity;
-	Vector2 m_acceleration;
+	Vector2 m_velocity = Vector2();
+	Vector2 m_acceleration = Vector2();
 };

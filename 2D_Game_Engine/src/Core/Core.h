@@ -1,8 +1,10 @@
 #pragma once
 #include <SDL.h>
 #include "../ECS/EntityManager.h"
+#include <vector>
 
-struct ColliderComponent;
+class BoxCollider2D;
+
 constexpr int SCREEN_WIDTH = 640;
 constexpr int SCREEN_HEIGHT = 480;
 constexpr SDL_Color DARK = { 30,30,30,255 };
@@ -41,6 +43,14 @@ public:
 		return event;
 	}
 
+	inline std::vector<BoxCollider2D*> getColliders() {
+		return colliders;
+	}
+
+	inline void addCollider(BoxCollider2D* col) {
+		colliders.push_back(col);
+	}
+
 	inline SDL_Renderer* getRenderer(){
 		return renderer;
 	}
@@ -55,6 +65,8 @@ private:
 	SDL_Renderer* renderer;
 
 	SDL_Rect* camera;
+
+	std::vector<BoxCollider2D*> colliders;
 
 	static Core* s_instance;
 };

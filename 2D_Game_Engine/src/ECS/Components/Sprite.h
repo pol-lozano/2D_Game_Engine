@@ -10,58 +10,62 @@ class Sprite : public Component
 {
 public:
 	Sprite() = default;
-	virtual ~Sprite() = default;
+	~Sprite() = default;
 
 	Sprite(SDL_Renderer* target, std::string textureid) : rTarget(target), textureID(textureid) { }
 
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
 		texture = AssetManager::get().getTexture(textureID);
+
 		//Read texture size
-		SDL_QueryTexture(texture, NULL, NULL, &width, &height);
-
-		dstRect.x = transform->position.x;
-		dstRect.y = transform->position.y;
-		dstRect.w = width * transform->scale.x;
-		dstRect.w = height * transform->scale.y;
-
+		SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
 		srcRect.x = 0;
 		srcRect.y = 0;
-		srcRect.w = width;
-		srcRect.h = height;
-
+		srcRect.w = size.x;
+		srcRect.h = size.y;
+		
+		dstRect.x = transform->position.x;
+		dstRect.y = transform->position.y;
+		dstRect.w = size.x * transform->scale.x;
+		dstRect.w = size.y * transform->scale.y;
 		return true;
+	}
+
+	void update(float dt) override final {
+		dstRect.w = static_cast<int>(size.x * transform->scale.x);
+		dstRect.h = static_cast<int>(size.y * transform->scale.y);
+
+		dstRect.x = static_cast<int>(transform->position.x) - Core::get().getCamera()->x;
+		dstRect.y = static_cast<int>(transform->position.y) - Core::get().getCamera()->y;
 	}
 
 	void draw() override final {
 		SDL_RenderCopyEx(rTarget, texture, &srcRect, &dstRect, transform->rotation, NULL, flip);
 	}
 
-	void update(float dt) override final {
-		dstRect.x = static_cast<int>(transform->position.x);
-		dstRect.y = static_cast<int>(transform->position.y);
-		dstRect.w = static_cast<int>(width*transform->scale.x);
-		dstRect.h = static_cast<int>(height*transform->scale.y);
-	}
-
 	inline int getWidth() {
-		return width;
+		return size.x;
 	}
 
 	inline int getHeight() {
-		return height;
+		return size.y;
+	}
+
+	inline Vector2 getCenter() {
+		return Vector2(size.x / 2, size.y / 2);
 	}
 
 private:
-	int width = 0;
-	int height = 0;
+	Transform* transform = nullptr;
+	SDL_Renderer* rTarget = nullptr;
+	SDL_Texture* texture = nullptr;
+	std::string textureID = "";
+
+	SDL_Point size = { 0, 0 };
 	SDL_Rect srcRect = { 0, 0, 0, 0 };
 	SDL_Rect dstRect = { 0, 0, 0, 0 };
 
-	Transform* transform = nullptr;
-	std::string textureID = "";
-	SDL_Texture* texture = nullptr;
-	SDL_Renderer* rTarget = nullptr;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 };
 

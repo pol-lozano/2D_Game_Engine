@@ -30,6 +30,14 @@ public:
 		position += v;
 	}
 
+	void translateX(const float f) {
+		position.x += f;
+	}
+	
+	void translateY(const float f) {
+		position.y += f;
+	}
+
 	//Not sure if unity does it like this??
 	void moveTowards(const Vector2 dest, float time) {
 		position.lerp(position, dest, time);

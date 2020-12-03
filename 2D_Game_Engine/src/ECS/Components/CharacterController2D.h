@@ -13,22 +13,20 @@ struct CharacterController2D : public Component {
 
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
-		//Ensure entity has a rigidbody2D
-		if (!entity->hasComponent<Rigidbody2D>())
-		{
-			entity->addComponent<Rigidbody2D>();
-		}
-		rb = &entity->getComponent<Rigidbody2D>();
-		
-		input = &entity->getComponent<InputHandler>();
+		//Ensure entity has a rigidbody2D and InputHandler
+		if (!entity->hasComponent<Rigidbody2D>()) { entity->addComponent<Rigidbody2D>(); }
+		if (!entity->hasComponent<InputHandler>()) { entity->addComponent<InputHandler>(); }
 
+		rb = &entity->getComponent<Rigidbody2D>();
+		input = &entity->getComponent<InputHandler>();
 		return true;
 	}
 
 	void update(float dt) override final
-	{
-		rb->setForceX(input->getInput().x * speed);
-		//Invert speed
-		rb->setForceY(-input->getInput().y * speed);
+	{	
+		Vector2 dir = input->getInputRaw().normalized();
+		std::cout << dir << std::endl;
+		//Invert speed for y axis
+		rb->setForce(Vector2(dir.x * speed, dir.y * -speed));
 	}
 };

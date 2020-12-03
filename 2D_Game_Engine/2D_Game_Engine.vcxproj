@@ -24,14 +24,13 @@
     <ClCompile Include="src\Physics\Collision.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Timer\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\dirt.bmp" />
     <Image Include="assets\dot.bmp" />
     <Image Include="assets\grass.bmp" />
     <Image Include="assets\hello_world.bmp" />
-    <Image Include="assets\player_anims.png" />
+    <Image Include="assets\player.png" />
     <Image Include="assets\player_idle.png" />
     <Image Include="assets\tiles.png" />
     <Image Include="assets\water.bmp" />
@@ -41,6 +40,7 @@
     <ClInclude Include="src\ECS\Components\CharacterController2D.h" />
     <ClInclude Include="src\ECS\Components\InputHandler.h" />
     <ClInclude Include="src\ECS\Components\Rigidbody2D.h" />
+    <ClInclude Include="src\ECS\Components\Text.h" />
     <ClInclude Include="src\ECS\EntityManager.h" />
     <ClInclude Include="src\ECS\Component.h" />
     <ClInclude Include="src\ECS\Components\Sprite.h" />
@@ -51,13 +51,12 @@
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\Physics\Vector2.h" />
-    <ClInclude Include="src\Timer\Time.h" />
+    <ClInclude Include="src\Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\lazy.map" />
     <None Include="assets\pyxel.map" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
