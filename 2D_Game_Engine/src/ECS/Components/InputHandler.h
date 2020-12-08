@@ -13,14 +13,14 @@ public:
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 
 		//Y AXIS (Vertical)
-		if (currentKeyStates[SDL_SCANCODE_UP] || currentKeyStates[SDL_SCANCODE_DOWN]) {
-			m_target.y = (currentKeyStates[SDL_SCANCODE_UP]) ? 1 : -1;
+		if (currentKeyStates[SDL_SCANCODE_W] || currentKeyStates[SDL_SCANCODE_S]) {
+			m_target.y = (currentKeyStates[SDL_SCANCODE_W]) ? 1 : -1;
 		}
 		else { m_target.y = 0; }
 
 		//X AXIS (Horizontal)
-		if (currentKeyStates[SDL_SCANCODE_RIGHT] || currentKeyStates[SDL_SCANCODE_LEFT]) {
-			m_target.x = (currentKeyStates[SDL_SCANCODE_RIGHT]) ? 1 : -1;
+		if (currentKeyStates[SDL_SCANCODE_D] || currentKeyStates[SDL_SCANCODE_A]) {
+			m_target.x = (currentKeyStates[SDL_SCANCODE_D]) ? 1 : -1;
 		}
 		else { m_target.x = 0; }
 

@@ -53,7 +53,22 @@ public:
 	}
 
 	inline Vector2 getCenter() {
-		return Vector2(size.x / 2, size.y / 2);
+		return Vector2(size.x * transform->scale.x / 2, size.y * transform->scale.y / 2);
+	}
+
+	//Set color
+	inline void setColor(Uint8 r, Uint8 g, Uint8 b) {
+		SDL_SetTextureColorMod(texture, r, g, b);
+	}
+
+	//Set alpha modulation
+	inline void setAlpha(Uint8 a) {
+		SDL_SetTextureAlphaMod(texture, a);
+	}
+
+	//Set blend mode
+	inline void setBlendMode(SDL_BlendMode blending) {
+		SDL_SetTextureBlendMode(texture, blending);
 	}
 
 private:

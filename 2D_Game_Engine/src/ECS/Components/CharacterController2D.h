@@ -9,7 +9,7 @@ struct CharacterController2D : public Component {
 	Transform* transform;
 	Rigidbody2D* rb;
 	InputHandler* input;
-	float speed = 200; //speed in pixels per sec
+	float speed = 300; //speed in pixels per sec
 
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
@@ -25,7 +25,7 @@ struct CharacterController2D : public Component {
 	void update(float dt) override final
 	{	
 		Vector2 dir = input->getInputRaw().normalized();
-		std::cout << dir << std::endl;
+
 		//Invert speed for y axis
 		rb->setForce(Vector2(dir.x * speed, dir.y * -speed));
 	}

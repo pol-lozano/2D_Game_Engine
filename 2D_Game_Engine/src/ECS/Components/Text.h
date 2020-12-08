@@ -11,21 +11,17 @@ public:
 	Text() = default;
 	~Text() = default;
 
-	Text(SDL_Renderer* target, std::string txt, std::string fontid) : rTarget(target), text(txt), fontID(fontid) { }
+	Text(SDL_Renderer* target, int x, int y, std::string txt, std::string fontid) : rTarget(target), position{x,y}, text(txt), fontID(fontid) { }
 
 	bool init() override final {
-		transform = &entity->getComponent<Transform>();
 		font = AssetManager::get().getFont(fontID);
 		setText(text);
 		return true;
 	}
 
 	void update(float dt) override final {
-		dstRect.w = static_cast<int>(size.x);
-		dstRect.h = static_cast<int>(size.y);
-
-		dstRect.x = static_cast<int>(10);
-		dstRect.y = static_cast<int>(10);
+		dstRect.x = position.x;
+		dstRect.y = position.y;
 	}
 
 	void draw() override final {
@@ -34,12 +30,15 @@ public:
 
 	inline void setText(std::string text) {
 		//Clear previous texture
-		SDL_DestroyTexture(texture);
+		if (texture != NULL) {
+			SDL_DestroyTexture(texture);
+		}
 
-		SDL_Surface* surf = TTF_RenderText_Blended(font, text.c_str(), color);
+		SDL_Surface* surf = TTF_RenderText_Solid(font, text.c_str(), color);
 		texture = SDL_CreateTextureFromSurface(rTarget, surf);
 		SDL_FreeSurface(surf);
-		SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
+
+		SDL_QueryTexture(texture, nullptr, nullptr, &dstRect.w, &dstRect.h);
 	}
 
 	inline void setFontColor(Uint8 r, Uint8 g, Uint8 b) {
@@ -47,11 +46,10 @@ public:
 	}
 
 private:
-	Transform* transform = nullptr;
+	SDL_Point position;
 	SDL_Renderer* rTarget = nullptr;
 	SDL_Texture* texture = nullptr;
 
-	SDL_Point size = { 0, 0 };
 	SDL_Rect dstRect = { 0, 0, 0, 0 };
 
 	TTF_Font* font = nullptr;

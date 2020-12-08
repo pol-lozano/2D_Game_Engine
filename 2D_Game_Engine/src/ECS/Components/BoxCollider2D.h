@@ -29,8 +29,8 @@ public:
 		box.w = static_cast<int>(size.x * transform->scale.x);
 		box.h = static_cast<int>(size.y * transform->scale.y);
 
-		box.x = static_cast<int>(transform->position.x - Core::get().getCamera()->x);
-		box.y = static_cast<int>(transform->position.y - Core::get().getCamera()->y);
+		box.x = static_cast<int>(transform->position.x) - Core::get().getCamera()->x;
+		box.y = static_cast<int>(transform->position.y) - Core::get().getCamera()->y;
 	}
 
 	void draw() override final {
@@ -54,7 +54,7 @@ private:
 	SDL_Renderer* rTarget = nullptr;
 	std::string collisionTag = "";
 
-	bool visible = true;
+	bool visible = false;
 	SDL_Point size = { 0, 0 };
 	SDL_Rect box = { 0, 0, 0, 0 };
 };

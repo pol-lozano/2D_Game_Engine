@@ -10,6 +10,7 @@ int main(int argc, char* args[]) {
 
 	const int FPS_TARGET{ 60 };
 	const double CYCLE_TIME{ 1.0f / FPS_TARGET };
+
 	// System timing
 	static Timer system_timer;
 	double accumulated_seconds{ 0.0f };

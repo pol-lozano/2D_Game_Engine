@@ -24,6 +24,7 @@
     <ClCompile Include="src\Physics\Collision.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\WorldGen\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\dirt.bmp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="src\ECS\Components\InputHandler.h" />
     <ClInclude Include="src\ECS\Components\Rigidbody2D.h" />
     <ClInclude Include="src\ECS\Components\Text.h" />
+    <ClInclude Include="src\ECS\Components\TilemapRenderer.h" />
     <ClInclude Include="src\ECS\EntityManager.h" />
     <ClInclude Include="src\ECS\Component.h" />
     <ClInclude Include="src\ECS\Components\Sprite.h" />
@@ -52,6 +54,7 @@
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\Physics\Vector2.h" />
     <ClInclude Include="src\Timer\Timer.h" />
+    <ClInclude Include="src\WorldGen\Tilemap.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />

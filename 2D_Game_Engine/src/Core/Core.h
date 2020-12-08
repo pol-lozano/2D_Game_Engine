@@ -5,8 +5,8 @@
 
 class BoxCollider2D;
 
-constexpr int SCREEN_WIDTH = 640;
-constexpr int SCREEN_HEIGHT = 480;
+constexpr int SCREEN_WIDTH = 640*2;
+constexpr int SCREEN_HEIGHT = 480*2;
 constexpr SDL_Color DARK = { 30,30,30,255 };
 
 class Core
@@ -21,6 +21,7 @@ public:
 
 	void events();
 	void update(float dt);
+	void setCamera(Entity* target);
 	void render();
 
 	//Singleton
@@ -61,9 +62,10 @@ private:
 
 	bool running;
 	SDL_Window* window;
-	SDL_Color clearColor;
 	SDL_Renderer* renderer;
+	SDL_DisplayMode display;
 
+	SDL_Color clearColor;
 	SDL_Rect* camera;
 
 	std::vector<BoxCollider2D*> colliders;
