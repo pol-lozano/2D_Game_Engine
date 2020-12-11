@@ -28,9 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\dirt.bmp" />
-    <Image Include="assets\dot.bmp" />
     <Image Include="assets\grass.bmp" />
-    <Image Include="assets\hello_world.bmp" />
     <Image Include="assets\player.png" />
     <Image Include="assets\player_idle.png" />
     <Image Include="assets\tiles.png" />
@@ -55,6 +53,7 @@
     <ClInclude Include="src\Physics\Vector2.h" />
     <ClInclude Include="src\Timer\Timer.h" />
     <ClInclude Include="src\WorldGen\Tilemap.h" />
+    <ClInclude Include="src\WorldGen\TilemapLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />

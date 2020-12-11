@@ -16,7 +16,7 @@ void AssetManager::loadTexture(std::string id, std::string path){
         SDL_Texture* texture = IMG_LoadTexture(Core::get().getRenderer(), path.c_str());
         if (texture) {
             textures[id] = texture;
-            std::cout << "texture: [" << path << "] successfully loaded!" << std::endl;
+            printf("Texture: [%s] successfully loaded!\n", path.c_str());
         }
         else
             std::cerr << IMG_GetError() << std::endl;
@@ -31,7 +31,7 @@ void AssetManager::loadFont(std::string id, std::string path, int fontSize){
     TTF_Font* newfont = TTF_OpenFont(path.c_str(), fontSize);
     if (newfont != nullptr) {
         fonts.emplace(id, newfont);
-        std::cout << "font: [" << path << "] successfully loaded!" << std::endl;
+        printf("Font: [%s] successfully loaded!\n", path.c_str());
     }
     else
         std::cerr << TTF_GetError() << std::endl;
@@ -57,11 +57,11 @@ void AssetManager::clean() {
     }
 
     fonts.clear();
-
-    std::cout << "Assets cleaned successfully!" << std::endl;
     
     IMG_Quit();
     TTF_Quit();
+
+    printf("Assets successfully cleaned!");
 }
 
 

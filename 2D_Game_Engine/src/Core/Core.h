@@ -40,6 +40,10 @@ public:
 		return camera;
 	}
 
+	inline SDL_DisplayMode* getDisplay() {
+		return display;
+	}
+
 	inline SDL_Event* getEvent() {
 		return event;
 	}
@@ -63,7 +67,7 @@ private:
 	bool running;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	SDL_DisplayMode display;
+	SDL_DisplayMode* display;
 
 	SDL_Color clearColor;
 	SDL_Rect* camera;

@@ -21,7 +21,6 @@ Entity* tilemap;
 Entity* entity1;
 Entity* entity2;
 
-
 Core::Core()
 {
 	running = false;
@@ -46,29 +45,31 @@ void Core::init()
 	if (!renderer) std::cerr << SDL_GetError() << std::endl;
 
 	//Get screen size
-	SDL_GetDisplayMode(0, 0, &display);
+	display = new SDL_DisplayMode();
+	SDL_GetDisplayMode(0, 0, display);
 
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
+	AssetManager::get().loadTexture("tileset", "assets/tiles.png");
 	AssetManager::get().loadTexture("test", "assets/player.png");
-	AssetManager::get().loadTexture("test2", "assets/hello_world.bmp");
 	AssetManager::get().loadFont("lazy", "assets/lazy.ttf", 20);
 
 	//Create manager
 	manager = new EntityManager();
 	event = new SDL_Event();
-	camera = new SDL_Rect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	camera = new SDL_Rect{ 0, 0, display->w, display->h };
 
+	//Create tilemap
 	tilemap = new Entity();
-	tilemap->addComponent<TilemapRenderer>(renderer,"test", new Tilemap(128*2,128*2));
+	tilemap->addComponent<TilemapRenderer>(renderer,"tileset", new Tilemap(1024, 1024));
 
 	//Create entity
 	player = new Entity(); 
 	auto sprite = player->addComponent<Sprite>(renderer, "test");
-	player->getComponent<Transform>().scale = Vector2(2,2);
+	player->getComponent<Transform>().scale = Vector2(1,1);
 	player->addComponent<Rigidbody2D>();
 	player->addComponent<BoxCollider2D>(renderer, sprite.getWidth(), sprite.getHeight());
 	player->addComponent<InputHandler>();
@@ -94,8 +95,10 @@ void Core::events()
 		case SDL_WINDOWEVENT:
 			switch (event->window.event) {
 			case SDL_WINDOWEVENT_RESIZED:
-				SDL_GetRendererOutputSize(renderer, &display.w, &display.h);
-				std::cout << display.w << " " << display.h << std::endl;
+				SDL_GetRendererOutputSize(renderer, &display->w, &display->h);
+				camera->w = display->w;
+				camera->h = display->h;
+				std::cout << display->w << " " << display->h << std::endl;
 				break;
 			}
 			break;
@@ -141,8 +144,11 @@ void Core::update(float dt)
 }
 
 void Core::setCamera(Entity* target) {
- 	camera->x = static_cast<int>(target->getComponent<Transform>().position.x) + target->getComponent<Sprite>().getWidth() - SCREEN_WIDTH / 2;
-	camera->y = static_cast<int>(target->getComponent<Transform>().position.y) + target->getComponent<Sprite>().getHeight() - SCREEN_HEIGHT / 2;
+	auto transform = target->getComponent<Transform>();
+	auto sprite = target->getComponent<Sprite>();
+
+ 	camera->x = (static_cast<int>(transform.position.x) + sprite.getWidth() / 2) - display->w / 2;
+	camera->y = (static_cast<int>(transform.position.y) + sprite.getHeight() / 2) - display->h / 2;
 }
 
 void Core::render()

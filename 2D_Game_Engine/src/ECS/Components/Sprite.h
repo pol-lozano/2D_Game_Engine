@@ -67,8 +67,8 @@ public:
 	}
 
 	//Set blend mode
-	inline void setBlendMode(SDL_BlendMode blending) {
-		SDL_SetTextureBlendMode(texture, blending);
+	inline void setBlendMode(SDL_BlendMode mode) {
+		SDL_SetTextureBlendMode(texture, mode);
 	}
 
 private:

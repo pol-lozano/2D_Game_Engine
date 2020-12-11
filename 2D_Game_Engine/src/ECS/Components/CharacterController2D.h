@@ -26,6 +26,13 @@ struct CharacterController2D : public Component {
 	{	
 		Vector2 dir = input->getInputRaw().normalized();
 
+		/*Vector2 dir = input->getInput();
+
+		//Clamp input
+		if (dir.length(dir) > 1) {
+			dir = dir.normalized();
+		}*/
+
 		//Invert speed for y axis
 		rb->setForce(Vector2(dir.x * speed, dir.y * -speed));
 	}

@@ -36,6 +36,7 @@ public:
 	void draw() override final {
 		if (visible) {
 			SDL_SetRenderDrawColor(rTarget, 255, 214, 85, 255);
+			//SDL_SetRenderDrawColor(rTarget, 86, 214, 255, 255);
 			SDL_RenderDrawRect(rTarget, &box);
 		}
 	}

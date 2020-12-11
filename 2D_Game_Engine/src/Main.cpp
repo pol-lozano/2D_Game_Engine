@@ -16,7 +16,7 @@ int main(int argc, char* args[]) {
 	double accumulated_seconds{ 0.0f };
 
 	while (core.isRunning()) 
-	{	
+	{
 		//Update system clock
 		system_timer.tick();
 		accumulated_seconds += system_timer.elapsed_seconds;
@@ -37,7 +37,11 @@ int main(int argc, char* args[]) {
 
 			//Render loop
 			core.render();
+
+			//Display fps
+			//printf("Fps: %f \n", 1.0f / physics_timer.elapsed_seconds);
 		}
+
 	}
 
 	core.clean();

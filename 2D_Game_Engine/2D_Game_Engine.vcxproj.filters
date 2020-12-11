@@ -35,12 +35,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\dot.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\hello_world.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\tiles.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -113,6 +107,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\TilemapRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WorldGen\TilemapLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

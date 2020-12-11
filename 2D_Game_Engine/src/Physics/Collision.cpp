@@ -8,9 +8,15 @@ bool Collision::AABB(const SDL_Rect& a, const SDL_Rect& b, SDL_Rect& result)
            a.y + a.h >= b.y && b.y + b.h >= a.y);
 }*/
 
-bool Collision::AABB(const BoxCollider2D& a, const BoxCollider2D& b, SDL_Rect& result)
+bool Collision::AABB(const SDL_Rect* a, const SDL_Rect* b, SDL_Rect* result)
 {
     //std::cout << c->getCollisionTag() << " | " << overlap.w << " | " << overlap.h << std::endl;
-    return SDL_IntersectRect(&a.box, &b.box, &result);
+    return SDL_IntersectRect(a, b, result);
 }
+
+bool Collision::AABB(const BoxCollider2D& a, const BoxCollider2D& b, SDL_Rect& result)
+{
+    return AABB(&a.box, &b.box, &result);
+}
+
  
