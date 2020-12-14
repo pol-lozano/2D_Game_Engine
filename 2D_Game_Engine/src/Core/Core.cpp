@@ -9,6 +9,7 @@
 #include "../ECS/Components/CharacterController2D.h"
 #include "../ECS/Components/InputHandler.h"
 #include "../ECS/Components/Text.h"
+#include "../ECS/Components/TilemapManager.h"
 #include "../ECS/Components/TilemapRenderer.h"
 #include "../Physics/Collision.h"
 #include "../WorldGen/Tilemap.h"
@@ -47,11 +48,10 @@ void Core::init()
 	//Get screen size
 	display = new SDL_DisplayMode();
 	SDL_GetDisplayMode(0, 0, display);
-
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	AssetManager::get().loadTexture("tileset", "assets/tiles.png");
 	AssetManager::get().loadTexture("test", "assets/player.png");
@@ -64,7 +64,8 @@ void Core::init()
 
 	//Create tilemap
 	tilemap = new Entity();
-	tilemap->addComponent<TilemapRenderer>(renderer,"tileset", new Tilemap(1024, 1024));
+	tilemap->addComponent<TilemapManager>(new Tilemap(1024, 1024));
+	tilemap->addComponent<TilemapRenderer>(renderer,"tileset");
 
 	//Create entity
 	player = new Entity(); 
@@ -96,9 +97,10 @@ void Core::events()
 			switch (event->window.event) {
 			case SDL_WINDOWEVENT_RESIZED:
 				SDL_GetRendererOutputSize(renderer, &display->w, &display->h);
+				//Set camera size to display size
 				camera->w = display->w;
 				camera->h = display->h;
-				std::cout << display->w << " " << display->h << std::endl;
+				printf("Changed screen size to : %d x %d\n", display->w, display->h);
 				break;
 			}
 			break;

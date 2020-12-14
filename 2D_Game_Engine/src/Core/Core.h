@@ -40,8 +40,12 @@ public:
 		return camera;
 	}
 
-	inline SDL_DisplayMode* getDisplay() {
-		return display;
+	inline SDL_Point getCameraPos() {
+		return SDL_Point{ camera->x, camera->y };
+	}
+
+	inline SDL_Point getScreenSize() {
+		return SDL_Point {display->w, display->h};
 	}
 
 	inline SDL_Event* getEvent() {
