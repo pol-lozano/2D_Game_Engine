@@ -51,7 +51,7 @@
     <ClInclude Include="src\ECS\Components\Transform.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Entity.h" />
-    <ClInclude Include="src\Physics\Vector2.h" />
+    <ClInclude Include="src\Physics\Vec2.h" />
     <ClInclude Include="src\Timer\Timer.h" />
     <ClInclude Include="src\WorldGen\Tilemap.h" />
     <ClInclude Include="src\WorldGen\TilemapLayer.h" />

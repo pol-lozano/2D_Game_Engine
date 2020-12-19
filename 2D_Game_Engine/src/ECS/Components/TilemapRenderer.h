@@ -4,6 +4,7 @@
 
 #include "../Entity.h"
 #include "../Component.h"
+
 #include "../../AssetManager/AssetManager.h"
 #include "../Physics/Collision.h" 
 
@@ -20,6 +21,7 @@ public:
 		tilemapManager = &entity->getComponent<TilemapManager>();
 		map = tilemapManager->getTilemap();
 
+		//Load tilemap palette
 		texture = AssetManager::get().getTexture(textureID);
 
 		srcRect.w = 8;

@@ -52,8 +52,8 @@ public:
 		return size.y;
 	}
 
-	inline Vector2 getCenter() {
-		return Vector2(size.x * transform->scale.x / 2, size.y * transform->scale.y / 2);
+	inline Vec2F getCenter() {
+		return Vec2F(size.x * transform->scale.x / 2, size.y * transform->scale.y / 2);
 	}
 
 	//Set color

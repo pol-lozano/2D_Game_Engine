@@ -1,7 +1,11 @@
 #include "Core.h"
 #include <iostream>
 #include <sstream>
+
 #include "../AssetManager/AssetManager.h"
+#include "../Physics/Collision.h"
+#include "../WorldGen/Tilemap.h"
+
 #include "../ECS/Components/Sprite.h"
 #include "../ECS/Components/BoxCollider2D.h"
 #include "../ECS/Components/Rigidbody2D.h"
@@ -11,8 +15,6 @@
 #include "../ECS/Components/Text.h"
 #include "../ECS/Components/TilemapManager.h"
 #include "../ECS/Components/TilemapRenderer.h"
-#include "../Physics/Collision.h"
-#include "../WorldGen/Tilemap.h"
 
 Core* Core::s_instance = nullptr;
 
@@ -70,7 +72,7 @@ void Core::init()
 	//Create entity
 	player = new Entity(); 
 	auto sprite = player->addComponent<Sprite>(renderer, "test");
-	player->getComponent<Transform>().scale = Vector2(1,1);
+	player->getComponent<Transform>().scale = Vec2F(1,1);
 	player->addComponent<Rigidbody2D>();
 	player->addComponent<BoxCollider2D>(renderer, sprite.getWidth(), sprite.getHeight());
 	player->addComponent<InputHandler>();

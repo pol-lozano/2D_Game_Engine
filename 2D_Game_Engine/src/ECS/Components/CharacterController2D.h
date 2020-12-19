@@ -1,16 +1,12 @@
 #pragma once
 #include "../Entity.h"
-#include "../../Physics/Vector2.h"
+#include "../../Physics/vec2.h"
 #include "../Component.h"
 #include "../../Core/Core.h"
 #include "InputHandler.h"
 
-struct CharacterController2D : public Component {
-	Transform* transform;
-	Rigidbody2D* rb;
-	InputHandler* input;
-	float speed = 300; //speed in pixels per sec
-
+class CharacterController2D : public Component {
+public:
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
 		//Ensure entity has a rigidbody2D and InputHandler
@@ -24,16 +20,22 @@ struct CharacterController2D : public Component {
 
 	void update(float dt) override final
 	{	
-		Vector2 dir = input->getInputRaw().normalized();
+		Vec2F dir = input->getInputRaw().normalize();
 
-		/*Vector2 dir = input->getInput();
+		/*Vec2F dir = input->getInput();
 
 		//Clamp input
 		if (dir.length(dir) > 1) {
-			dir = dir.normalized();
+			dir = dir.normalize();
 		}*/
 
 		//Invert speed for y axis
-		rb->setForce(Vector2(dir.x * speed, dir.y * -speed));
+		rb->setForce(Vec2F(dir.x * speed, dir.y * -speed));
 	}
+
+private:
+	Transform* transform;
+	Rigidbody2D* rb;
+	InputHandler* input;
+	float speed = 300; //speed in pixels per sec
 };

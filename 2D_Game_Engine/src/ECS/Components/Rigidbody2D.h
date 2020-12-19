@@ -1,6 +1,5 @@
 #pragma once
 #include "../Entity.h"
-#include "../../Physics/Vector2.h"
 #include "../Component.h"
 
 constexpr float UNI_MASS = 1.0f;
@@ -24,25 +23,9 @@ public:
 		transform->translate(m_velocity);
 	}
 
-	//Gravity & Mass
-	inline void setMass(float mass) { m_mass = mass; }
-	inline void setGravity(float gravity) { m_gravity = gravity; }
-
-	//Force
-	inline void setForce(const Vector2 f) { m_force = f; }
-	inline void setForceX(const float fx) { m_force.x = fx; }
-	inline void setForceY(const float fy) { m_force.y = fy; }
-	inline void setInertialForce(const Vector2 f) { m_force *= f; }
-	inline void zeroForce() { m_force.zero(); }
-
-	//Friction
-	inline void setFriction(const Vector2 fr) { m_friction = fr; }
-	inline void zeroFriction() { m_friction.zero(); }
-
-	inline float getMass() { return m_mass; }
-	inline Vector2 position() { return transform->position; }
-	inline Vector2 velocity() { return m_velocity; }
-	inline Vector2 acceleration() { return m_acceleration; }
+	void setForce(Vec2F f) {
+		m_force = f;
+	}
 
 private:
 	Transform* transform = nullptr;
@@ -50,9 +33,9 @@ private:
 	float m_mass = UNI_MASS;
 	float m_gravity = GRAVITY;
 
-	Vector2 m_force = Vector2();
-	Vector2 m_friction = Vector2();
+	Vec2F m_force = Vec2F();
+	Vec2F m_friction = Vec2F();
 
-	Vector2 m_velocity = Vector2();
-	Vector2 m_acceleration = Vector2();
+	Vec2F m_velocity = Vec2F();
+	Vec2F m_acceleration = Vec2F();
 };

@@ -28,16 +28,16 @@ public:
 		m_input.lerp(m_input, m_target, dt * m_smoothing);
 	}
 
-	inline Vector2 getInput() {
+	inline Vec2F getInput() {
 		return m_input;
 	}
 
-	inline Vector2 getInputRaw() {
+	inline Vec2F getInputRaw() {
 		return m_target;
 	}
 
 private:
-	Vector2 m_input = Vector2();
-	Vector2 m_target = Vector2();
+	Vec2F m_input = Vec2F();
+	Vec2F m_target = Vec2F();
 	float m_smoothing = 10;
 };
