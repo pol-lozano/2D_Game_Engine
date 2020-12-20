@@ -100,19 +100,22 @@
     <ClInclude Include="src\ECS\Components\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Physics\Vec2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WorldGen\TilemapLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\WorldGen\Tilemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\TilemapRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\WorldGen\TilemapLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ECS\Components\TilemapManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Physics\Vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

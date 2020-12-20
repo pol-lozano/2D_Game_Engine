@@ -63,7 +63,6 @@ public:
 
 	//Gets tile id by x and y pos
 	inline int getTileID(int x, int y) {
-		if (x < 0 || y < 0) std::cout << x << "/" << y << std::endl;
 		return (x * height) + y;
 	}
 

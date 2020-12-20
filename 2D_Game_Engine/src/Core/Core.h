@@ -48,6 +48,11 @@ public:
 		return SDL_Point {display->w, display->h};
 	}
 
+	//Returns the area that the camera can see, For camera culling
+	inline SDL_Rect getVisibleArea() {
+		return SDL_Rect{ camera->x,camera->y,display->w,display->h };
+	}
+
 	inline SDL_Event* getEvent() {
 		return event;
 	}
