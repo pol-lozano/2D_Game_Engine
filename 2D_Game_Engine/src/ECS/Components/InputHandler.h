@@ -8,7 +8,7 @@
 
 class InputHandler : public Component {
 public:
-	void update(float dt) override final {
+	void update(double dt) override final {
 		//Get the keystates
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 
@@ -39,5 +39,5 @@ public:
 private:
 	Vec2F m_input = Vec2F();
 	Vec2F m_target = Vec2F();
-	float m_smoothing = 10;
+	float m_smoothing = 15;
 };

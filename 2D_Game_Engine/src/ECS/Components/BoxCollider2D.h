@@ -18,14 +18,13 @@ public:
 		size = { width, height };
 	}
 
-	bool init() override final {
+	void init() override final {
 		transform = &entity->getComponent<Transform>();
 		//Add to collider list 
 		Core::get().addCollider(this);
-		return true;
 	}
 
-	void update(float dt) override final {
+	void update(double dt) override final {
 		box.w = static_cast<int>(size.x * transform->scale.x);
 		box.h = static_cast<int>(size.y * transform->scale.y);
 

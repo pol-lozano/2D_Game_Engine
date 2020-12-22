@@ -24,6 +24,7 @@
     <ClCompile Include="src\Physics\Collision.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\WorldGen\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\dirt.bmp" />
@@ -41,6 +42,8 @@
     <ClInclude Include="src\ECS\Components\Text.h" />
     <ClInclude Include="src\ECS\Components\Map.h" />
     <ClInclude Include="src\ECS\Components\TileMap.h" />
+    <ClInclude Include="src\ECS\Components\TilemapManager.h" />
+    <ClInclude Include="src\ECS\Components\TilemapRenderer.h" />
     <ClInclude Include="src\ECS\EntityManager.h" />
     <ClInclude Include="src\ECS\Component.h" />
     <ClInclude Include="src\ECS\Components\Sprite.h" />
@@ -52,6 +55,8 @@
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\Physics\Vec2.h" />
     <ClInclude Include="src\Timer\Timer.h" />
+    <ClInclude Include="src\WorldGen\Tilemap.h" />
+    <ClInclude Include="src\WorldGen\TilemapLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />

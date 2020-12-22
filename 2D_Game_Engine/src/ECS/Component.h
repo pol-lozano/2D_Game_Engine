@@ -9,7 +9,7 @@ public:
 	//Components owner
 	Entity* entity;
 
-	virtual bool init() { return true; }
-	virtual void update(float dt) {}
+	virtual void init() {}
+	virtual void update(double dt) {}
 	virtual void draw() {}
 };

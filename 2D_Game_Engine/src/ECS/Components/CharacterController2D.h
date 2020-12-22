@@ -7,7 +7,7 @@
 
 class CharacterController2D : public Component {
 public:
-	bool init() override final {
+	void init() override final {
 		transform = &entity->getComponent<Transform>();
 		//Ensure entity has a rigidbody2D and InputHandler
 		if (!entity->hasComponent<Rigidbody2D>()) { entity->addComponent<Rigidbody2D>(); }
@@ -15,19 +15,18 @@ public:
 
 		rb = &entity->getComponent<Rigidbody2D>();
 		input = &entity->getComponent<InputHandler>();
-		return true;
 	}
 
-	void update(float dt) override final
+	void update(double dt) override final
 	{	
-		Vec2F dir = input->getInputRaw().normalize();
+		//Vec2F dir = input->getInputRaw().normalize();
 
-		/*Vec2F dir = input->getInput();
+		Vec2F dir = input->getInput();
 
 		//Clamp input
-		if (dir.length(dir) > 1) {
+		if (dir.length() > 1) {
 			dir = dir.normalize();
-		}*/
+		}
 
 		//Invert speed for y axis
 		rb->setForce(Vec2F(dir.x * speed, dir.y * -speed));

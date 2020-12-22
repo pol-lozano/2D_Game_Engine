@@ -68,7 +68,7 @@ void Core::init()
 
 	//Create tilemap
 	tilemap = new Entity();
-	tilemap->addComponent<Tilemap>(renderer,"tileset");
+	tilemap->addComponent<Tilemap>(renderer, "tileset");
 
 	//tilemap->addComponent<TilemapManager>(new Tilemap(1024, 1024));
 	//tilemap->addComponent<TilemapRenderer>(renderer,"tileset");
@@ -117,7 +117,7 @@ void Core::events()
 }
 
 
-void Core::update(float dt)
+void Core::update(double dt)
 {
 	manager->refresh();
 	manager->update(dt);	

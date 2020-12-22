@@ -20,7 +20,7 @@ public:
 	void clean();
 
 	void events();
-	void update(float dt);
+	void update(double dt);
 	void setCamera(Entity* target);
 	void render();
 

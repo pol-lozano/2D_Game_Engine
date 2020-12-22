@@ -13,13 +13,12 @@ public:
 
 	Text(SDL_Renderer* target, int x, int y, std::string txt, std::string fontid) : rTarget(target), position{x,y}, text(txt), fontID(fontid) { }
 
-	bool init() override final {
+	void init() override final {
 		font = AssetManager::get().getFont(fontID);
 		setText(text);
-		return true;
 	}
 
-	void update(float dt) override final {
+	void update(double dt) override final {
 		dstRect.x = position.x;
 		dstRect.y = position.y;
 	}

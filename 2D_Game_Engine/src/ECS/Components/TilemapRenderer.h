@@ -14,7 +14,7 @@ class TilemapRenderer : public Component {
 public:
 	TilemapRenderer(SDL_Renderer* target, std::string textureid) : rTarget(target), textureID(textureid) { }
 
-	bool init() override final {
+	void init() override final {
 		transform = &entity->getComponent<Transform>();
 
 		//Add tilemap if there isnt already one
@@ -29,10 +29,9 @@ public:
 		srcRect.h = 8;
 		dstRect.w = TILE_SIZE;
 		dstRect.h = TILE_SIZE;
-		return true;
 	}
 
-	void update(float dt) override final {
+	void update(double dt) override final {
 		//Update camera pos and screen size
 
 		//dstRect.x = static_cast<int>(transform->position.x) - Core::get().getCamera()->x;

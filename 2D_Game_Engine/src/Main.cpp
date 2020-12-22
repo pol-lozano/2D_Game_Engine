@@ -28,7 +28,7 @@ int main(int argc, char* args[]) {
 		while (std::isgreater(accumulated_seconds, CYCLE_TIME))
 		{
 			// Reset the accumulator
-			accumulated_seconds = 0;
+			accumulated_seconds = 0.0f;
 
 			//Physics loop
 			static Timer physics_timer;
@@ -39,9 +39,8 @@ int main(int argc, char* args[]) {
 			core.render();
 
 			//Display fps
-			//printf("Fps: %f \n", 1.0f / physics_timer.elapsed_seconds);
+			printf("FPS :: %lf DELTA :: %lf\n", 1.0f / physics_timer.elapsed_seconds, physics_timer.elapsed_seconds);
 		}
-
 	}
 
 	core.clean();

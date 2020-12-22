@@ -10,16 +10,15 @@ public:
 	Rigidbody2D() = default;
 	virtual ~Rigidbody2D() = default;
 	
-	bool init() override final {
+	void init() override final {
 		transform = &entity->getComponent<Transform>();
-		return true;
 	}
 
-	void update(float dt) override final {
+	void update(double dt) override final {
 		m_acceleration.x = (m_force.x + m_friction.x) / m_mass;
-		m_acceleration.y = m_gravity + m_force.y / m_mass;
+		m_acceleration.y = (m_gravity + m_force.y) / m_mass;
 		m_velocity = m_acceleration * dt;
-
+		//std::cout << m_velocity << " " << m_acceleration.x <<" " << m_acceleration.y << " " << dt;
 		transform->translate(m_velocity);
 	}
 

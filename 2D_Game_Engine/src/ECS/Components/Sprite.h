@@ -6,15 +6,14 @@
 #include "../Component.h"
 #include "../../AssetManager/AssetManager.h"
 
-class Sprite : public Component
-{
+class Sprite : public Component {
 public:
 	Sprite() = default;
 	~Sprite() = default;
 
 	Sprite(SDL_Renderer* target, std::string textureid) : rTarget(target), textureID(textureid) { }
 
-	bool init() override final {
+	void init() override final {
 		transform = &entity->getComponent<Transform>();
 		texture = AssetManager::get().getTexture(textureID);
 
@@ -29,10 +28,9 @@ public:
 		dstRect.y = transform->position.y;
 		dstRect.w = size.x * transform->scale.x;
 		dstRect.w = size.y * transform->scale.y;
-		return true;
 	}
 
-	void update(float dt) override final {
+	void update(double dt) override final {
 		dstRect.w = static_cast<int>(size.x * transform->scale.x);
 		dstRect.h = static_cast<int>(size.y * transform->scale.y);
 

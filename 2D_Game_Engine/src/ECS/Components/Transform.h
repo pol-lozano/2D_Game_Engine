@@ -3,7 +3,6 @@
 #include "../Component.h"
 
 struct Transform : public Component {
-
 	Vec2F position = Vec2F();
 	Vec2F scale = Vec2F(1, 1);
 	float rotation = 0;

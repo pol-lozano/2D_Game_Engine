@@ -10,12 +10,11 @@ class TilemapManager : public Component {
 public:
 	TilemapManager( Tilemap* tilemap) : map(tilemap) { }
 
-	bool init() override final {
+	void init() override final {
 		transform = &entity->getComponent<Transform>();
-		return true;
 	}
 
-	void update(float dt) override final {
+	void update(double dt) override final {
 		//Update camera pos and screen size
 		cameraPos = Core::get().getCameraPos();
 
