@@ -44,13 +44,21 @@ public:
 		return SDL_Point{ camera->x, camera->y };
 	}
 
+	inline int camToWorldX(int x) {
+		return x + camera->x;
+	}
+
+	inline int camToWorldY(int y) {
+		return y + camera->y;
+	}
+
 	inline SDL_Point getScreenSize() {
 		return SDL_Point {display->w, display->h};
 	}
 
 	//Returns the area that the camera can see, For camera culling
 	inline SDL_Rect getVisibleArea() {
-		return SDL_Rect{ camera->x,camera->y,display->w,display->h };
+		return SDL_Rect { camera->x, camera->y, display->w, display->h };
 	}
 
 	inline SDL_Event* getEvent() {

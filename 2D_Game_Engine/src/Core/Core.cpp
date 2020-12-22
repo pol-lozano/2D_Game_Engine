@@ -4,7 +4,7 @@
 
 #include "../AssetManager/AssetManager.h"
 #include "../Physics/Collision.h"
-#include "../WorldGen/Tilemap.h"
+//#include "../WorldGen/Tilemap.h"
 
 #include "../ECS/Components/Sprite.h"
 #include "../ECS/Components/BoxCollider2D.h"
@@ -13,8 +13,9 @@
 #include "../ECS/Components/CharacterController2D.h"
 #include "../ECS/Components/InputHandler.h"
 #include "../ECS/Components/Text.h"
-#include "../ECS/Components/TilemapManager.h"
-#include "../ECS/Components/TilemapRenderer.h"
+//#include "../ECS/Components/TilemapManager.h"
+//#include "../ECS/Components/TilemapRenderer.h"
+#include "../ECS/Components/TileMap.h"
 
 Core* Core::s_instance = nullptr;
 
@@ -39,7 +40,7 @@ void Core::init()
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) std::cerr << SDL_GetError() << std::endl;
 	
 	//Create window
-	auto wflags = (SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+	auto wflags = (SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 	window = SDL_CreateWindow("ENGINE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, wflags);
 	if (!window) std::cerr << SDL_GetError() << std::endl;
 
@@ -50,6 +51,7 @@ void Core::init()
 	//Get screen size
 	display = new SDL_DisplayMode();
 	SDL_GetDisplayMode(0, 0, display);
+	SDL_GetRendererOutputSize(renderer, &display->w, &display->h);
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
@@ -66,8 +68,10 @@ void Core::init()
 
 	//Create tilemap
 	tilemap = new Entity();
-	tilemap->addComponent<TilemapManager>(new Tilemap(1024, 1024));
-	tilemap->addComponent<TilemapRenderer>(renderer,"tileset");
+	tilemap->addComponent<Tilemap>(renderer,"tileset");
+
+	//tilemap->addComponent<TilemapManager>(new Tilemap(1024, 1024));
+	//tilemap->addComponent<TilemapRenderer>(renderer,"tileset");
 
 	//Create entity
 	player = new Entity(); 
