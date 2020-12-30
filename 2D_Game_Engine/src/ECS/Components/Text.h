@@ -8,9 +8,6 @@
 
 class Text : public Component {
 public:
-	Text() = default;
-	~Text() = default;
-
 	Text(SDL_Renderer* target, int x, int y, std::string txt, std::string fontid) : rTarget(target), position{x,y}, text(txt), fontID(fontid) { }
 
 	void init() override final {

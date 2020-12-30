@@ -1,14 +1,12 @@
 #pragma once
-#include "../../Physics/vec2.h"
+#include "../../Physics/Vec2.h"
 #include "../Component.h"
 
 struct Transform : public Component {
 	Vec2F position = Vec2F();
 	Vec2F scale = Vec2F(1, 1);
 	float rotation = 0;
-
-	Transform() = default;
-	virtual ~Transform() = default;
+	bool kinematic = true;
 
 	Transform(float x, float y) {
 		position = Vec2F(x, y);
@@ -25,21 +23,20 @@ struct Transform : public Component {
 		rotation = rot;
 	}
 
-	void translate(Vec2F& v) {
+	inline void translate(const Vec2F& v) {
 		position += v;
 	}
 
-	void translateX(const float f) {
+	inline void translateX(const float f) {
 		position.x += f;
 	}
 
-	void translateY(const float f) {
+	inline void translateY(const float f) {
 		position.y += f;
 	}
 
 	//Not sure if unity does it like this??
-	void moveTowards(const Vec2F dest, float time) {
+	inline void moveTowards(const Vec2F dest, float time) {
 		position.lerp(position, dest, time);
 	}
-
 };

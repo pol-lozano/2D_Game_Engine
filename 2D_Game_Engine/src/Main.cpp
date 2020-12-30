@@ -39,7 +39,7 @@ int main(int argc, char* args[]) {
 			core.render();
 
 			//Display fps
-			printf("FPS :: %lf DELTA :: %lf\n", 1.0f / physics_timer.elapsed_seconds, physics_timer.elapsed_seconds);
+			//printf("FPS :: %lf DELTA :: %lf\r", 1.0f / physics_timer.elapsed_seconds, physics_timer.elapsed_seconds);
 		}
 	}
 

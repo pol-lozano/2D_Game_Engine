@@ -1,8 +1,7 @@
 #pragma once
 #include "../Entity.h"
-#include "../../Physics/vec2.h"
 #include "../Component.h"
-#include "../../Core/Core.h"
+
 #include "InputHandler.h"
 
 class CharacterController2D : public Component {
@@ -17,17 +16,14 @@ public:
 		input = &entity->getComponent<InputHandler>();
 	}
 
-	void update(double dt) override final
-	{	
-		//Vec2F dir = input->getInputRaw().normalize();
+	void update(double dt) override final {	
+		//move(input->getInputRaw());	
+		move(input->getInput());
+	}
 
-		Vec2F dir = input->getInput();
-
+	void move(Vec2F dir) {
 		//Clamp input
-		if (dir.length() > 1) {
-			dir = dir.normalize();
-		}
-
+		if (dir.length() > 1) { dir = dir.normalize(); }
 		//Invert speed for y axis
 		rb->setForce(Vec2F(dir.x * speed, dir.y * -speed));
 	}
@@ -35,6 +31,8 @@ public:
 private:
 	Transform* transform;
 	Rigidbody2D* rb;
+	Sprite* sr;
 	InputHandler* input;
+
 	float speed = 300; //speed in pixels per sec
 };

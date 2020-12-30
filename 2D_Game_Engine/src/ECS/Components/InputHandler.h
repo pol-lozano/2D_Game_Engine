@@ -1,10 +1,11 @@
 #pragma once
-#include <SDL.h>
-#include <string>
 #include "../Entity.h"
 #include "../Component.h"
-#include "../../Core/Core.h"
+
+#include <SDL.h>
+#include <string>
 #include <iomanip>
+
 
 class InputHandler : public Component {
 public:

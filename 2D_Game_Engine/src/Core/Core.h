@@ -7,7 +7,7 @@ class BoxCollider2D;
 
 constexpr int SCREEN_WIDTH = 640*2;
 constexpr int SCREEN_HEIGHT = 480*2;
-constexpr SDL_Color DARK = { 30,30,30,255 };
+constexpr SDL_Color DARK = { 16,16,16,255 };
 
 class Core
 {
@@ -21,8 +21,11 @@ public:
 
 	void events();
 	void update(double dt);
-	void setCamera(Entity* target);
 	void render();
+
+	void handleCollisions();
+	void setCamera(Entity* target);
+	
 
 	//Singleton
 	inline static Core& get() {
@@ -78,19 +81,19 @@ public:
 	}
 
 private:
-	EntityManager* manager;
-	SDL_Event* event;
+	static Core* s_instance;
+	bool running = false;
 
-	bool running;
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	SDL_DisplayMode* display;
+	EntityManager* manager = nullptr;
+	SDL_Event* event = nullptr;
 
-	SDL_Color clearColor;
-	SDL_Rect* camera;
+	SDL_Window* window = nullptr;
+	SDL_Renderer* renderer = nullptr;
+	SDL_DisplayMode* display = nullptr;
+	SDL_Rect* camera = nullptr;
+
+	SDL_Color clearColor = DARK;
 
 	std::vector<BoxCollider2D*> colliders;
-
-	static Core* s_instance;
 };
 

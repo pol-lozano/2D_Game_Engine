@@ -37,8 +37,7 @@ public:
 	}
 
 	template<typename T> 
-	inline T& getComponent() const
-	{
+	inline T& getComponent() const {
 		//Set pointer to position in pointer array
 		auto ptr(componentArray[getComponentTypeID<T>()]);
 		return *static_cast<T*> (ptr);

@@ -7,7 +7,7 @@ public:
 	virtual ~Component() = default;
 
 	//Components owner
-	Entity* entity;
+	Entity* entity = nullptr;
 
 	virtual void init() {}
 	virtual void update(double dt) {}

@@ -3,10 +3,10 @@
 
 #include "../Component.h"
 #include "../Entity.h"
+
 #include <vector>
 #include <algorithm>
-#include <memory>
-#include "../../Core/Core.h"
+#include <random>
 
 enum BlockID : Uint16 {
 	AIR,
@@ -30,7 +30,7 @@ struct BlockInfo {
 };
 
 const Uint8 TILE_SIZE = 16;
-const Uint32 CHUNK_SIZE = 256;
+const Uint32 CHUNK_SIZE = 128;
 const Uint32 CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE;
 
 struct Chunk {
@@ -40,7 +40,7 @@ struct Chunk {
 	void updateLight() {
 		//Get mouse position
 		int MOUSE_X, MOUSE_Y;
-		Uint32 MOUSE_STATE = SDL_GetMouseState(&MOUSE_X, &MOUSE_Y);
+		int MOUSE_STATE = SDL_GetMouseState(&MOUSE_X, &MOUSE_Y);
 
 		//Translate screen space to tile space
 		Uint16 _tx = floor(Core::get().camToWorldX(MOUSE_X) / TILE_SIZE);
@@ -58,6 +58,7 @@ struct Chunk {
 					blocks[std::clamp(_ty * CHUNK_SIZE + _tx, (Uint32)0, CHUNK_AREA - 1)].id = BlockID::STONE;
 					break;
 				case SDL_BUTTON(SDL_BUTTON_RIGHT):
+					if (blocks[_ty * CHUNK_SIZE + _tx].id != 0)
 					blocks[std::clamp(_ty * CHUNK_SIZE + _tx, (Uint32)0, CHUNK_AREA - 1)].id = BlockID::AIR;
 					break;
 				}
@@ -113,29 +114,23 @@ struct Chunk {
 
 					if (id == BlockID::AIR) continue;
 
-					sub = (Uint8)(tt +
-						(tr << 1) +
-						(tb << 2) +
-						(tl << 3));
-					/*
+					sub = (Uint8)(tt + (tr << 1) + (tb << 2) + (tl << 3));
+
+					/* //CORNERS
 						if (sub == 15 && (ttl || ttr || tbl || tbr)) {
-							sub += (Uint8)(ttl +
-								(ttr << 1) +
-								(tbr << 2) +
-								(tbl << 3));
+							sub += (Uint8)(ttl + (ttr << 1) + (tbr << 2) + (tbl << 3));
 						}
 					*/
 
 					blocks[tile].sub = sub;
 				}
-
 			}
 		}
 	}
 
 	//Autotile chunk
 	void autoTile() {
-		BlockID id = BlockID::AIR;
+		BlockID id = AIR;
 		Uint8 sub;
 
 		for (Uint16 y = 1; y < CHUNK_SIZE - 1; y++) {
@@ -178,20 +173,34 @@ public:
 		ch_ptr = std::make_shared<Chunk>();
 
 		for (Uint32 b = 0; b < CHUNK_AREA; b++) {
-			ch_ptr->blocks.push_back({ BlockID::STONE, 0 });
+			ch_ptr->blocks.push_back({ BlockID::AIR, 0 });
 			ch_ptr->lightUpdates.push_back(b);
 		}
 
-		/*//Place stone
-		for (Uint32 x = 0; x < CHUNK_SIZE; x++) {
-			auto& _bl = ch_ptr->blocks[0 * CHUNK_SIZE + x];
-			_bl.id = BlockID::STONE;
-		}*/
+		generate();
 
 		ch_ptr->autoTile();
 		ch_ptr->updateLight();
 		Chunks.push_back(std::move(ch_ptr));
+	}
+	void generate() {
+		Uint16 gen_h = CHUNK_SIZE / 2;
 
+		//Random step
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<>distr(-1, 1);
+
+		//Place stone
+		for (Uint32 x = 0; x < CHUNK_SIZE; x++) {
+			gen_h += distr(gen); //rand() % ((1 - (-1)) + 1);
+			for (Uint32 y = 0; y < CHUNK_SIZE; y++)
+			{
+				if (y < gen_h) continue;
+				auto& _bl = ch_ptr->blocks[y * CHUNK_SIZE + x];
+				_bl.id = BlockID::STONE;
+			}
+		}
 	}
 
 	void update(double dt) override final {
@@ -199,7 +208,6 @@ public:
 	}
 
 	void draw() override final {
-		Uint16 tx, ty;
 		SDL_Rect tr {0, 0, TILE_SIZE, TILE_SIZE};
 
 		const SDL_Rect visibleArea = Core::get().getVisibleArea();
@@ -231,8 +239,8 @@ public:
 						default: SDL_SetTextureColorMod(texture, 255, 255, 255); break; // 100 % light
 					}
 
-					tr.x = (int)floor((tx * TILE_SIZE) - visibleArea.x);
-					tr.y = (int)floor((ty * TILE_SIZE) - visibleArea.y);
+					tr.x = floor((tx * TILE_SIZE) - visibleArea.x);
+					tr.y = floor((ty * TILE_SIZE) - visibleArea.y);
 
 					//Draw correct texture clip
 					drawSpriteClip(texture, ((BLOCK_LIST[_bl.id].tile.x + _bl.sub) * TILE_SIZE), ((BLOCK_LIST[_bl.id].tile.y) * TILE_SIZE), &tr);
@@ -248,76 +256,31 @@ public:
 			Uint16 _ty = floor(Core::get().camToWorldY(MOUSE_Y) / TILE_SIZE);
 
 			//Bounds check
-			if (_tx > CHUNK_SIZE - 1 || _ty > CHUNK_SIZE - 1) return;
+			if (_tx > CHUNK_SIZE - 1 || _ty > CHUNK_SIZE - 1) continue;
 
 			//Render marker
 			tr.x = (int)floor((_tx * TILE_SIZE) - visibleArea.x);
 			tr.y = (int)floor((_ty * TILE_SIZE) - visibleArea.y);
+
 			SDL_SetRenderDrawColor(rTarget, 86, 214, 255, 255);
 			SDL_RenderDrawRect(rTarget, &tr);
-			
-			/*
-			//Only render what is on screen
-			for (Sint16 ty = start_y; ty <= end_y; ty++) {
-				for (Sint16 tx = start_x; tx <= end_x; tx++) {
-
-					//BOUNDS CHECK
-					if  (tx < 0 || ty < 0 || tx > CHUNK_SIZE - 1 || ty > CHUNK_SIZE - 1) continue;
-
-					auto& _bl = ch_ptr->blocks[ty * CHUNK_SIZE + tx];
-
-					SDL_SetRenderDrawColor(rTarget, 128, 128, 128, 255);
-
-					if (_bl.id == BlockID::AIR) continue;
-					if (_bl.light == 0) SDL_SetRenderDrawColor(rTarget, 64, 64, 64, 255);
-
-					tr = { (int)floor((tx * TILE_SIZE) - Core::get().getVisibleArea().x), (int)floor((ty * TILE_SIZE) - Core::get().getVisibleArea().y), TILE_SIZE, TILE_SIZE };
-					SDL_RenderFillRect(rTarget, &tr);
-				}
-			}*/
-			//Render mouse pos marker
-		//dstRect.x = (int)floor(tilemapManager->getMousePosTile().x * TILE_SIZE) - Core::get().getCamera()->x;
-		//dstRect.y = (int)floor(tilemapManager->getMousePosTile().y * TILE_SIZE) - Core::get().getCamera()->y;
-		//SDL_SetRenderDrawColor(rTarget, 86, 214, 255, 255);
-		//SDL_RenderDrawRect(rTarget, &dstRect);
-			/*
-
-			for (Uint32 t = 0; t < ch_ptr->blocks.size(); t++) {
-				auto& _bl = ch_ptr->blocks[t];
-
-				//if (_bl.id == BlockID::AIR) continue;
-				//if (_bl.light == 0) continue;
-
-				tx = (t % CHUNK_SIZE) * TILE_SIZE;
-				ty = (t / CHUNK_SIZE) * TILE_SIZE;
-
-				//Camera culling
-				tr = { tx - Core::get().getVisibleArea().x, ty - Core::get().getVisibleArea().y, TILE_SIZE, TILE_SIZE };
-				cr = Core::get().getVisibleArea();
-				cr.x = Core::get().getVisibleArea().x + (Core::get().getVisibleArea().w/2);
-				cr.y = Core::get().getVisibleArea().y + (Core::get().getVisibleArea().h/2);
-
-				//std::cout << cr.x << " " << cr.y << " " << cr.w << " " << cr.h << std::endl;
-				//std::cout << tr.x << " " << tr.y << " " << tr.w << " " << tr.h << std::endl;
-				SDL_RenderDrawRect(rTarget, &cr);
-
-				if (!SDL_HasIntersection(&cr, &tr)) continue;
-
-				if(t == 0)
-					SDL_SetRenderDrawColor(rTarget, 0x00, 0, 0x00, 0xFF);
-				else
-					SDL_SetRenderDrawColor(rTarget, 0x00, 0xFF, 0x00, 0xFF);
-
-				//Draw correct texture clip
-				SDL_RenderDrawRect(rTarget, &tr);
-
-			}*/
-		}
+			SDL_RenderDrawLine(rTarget, tr.x + TILE_SIZE/2, tr.y + TILE_SIZE/2, visibleArea.w/2,  visibleArea.h/2);
+		} 
 	}
 	
 	void drawSpriteClip(SDL_Texture* tex, Uint16 srcX, Uint16 srcY, SDL_Rect* dstRect) {
 		SDL_Rect srcRect = { srcX, srcY, TILE_SIZE, TILE_SIZE };
 		SDL_RenderCopy(rTarget, texture, &srcRect, dstRect);
+	}
+
+	//checks only first chunk gotta fix
+	bool isSolidTile(Uint16 tx, Uint16 ty) {
+		auto& ch_ptr = Chunks[0];
+
+		//Bounds check
+		if (tx < 0 || ty < 0 || tx > CHUNK_SIZE - 1 || ty > CHUNK_SIZE - 1) return true;
+		auto& _bl = ch_ptr->blocks[ty * CHUNK_SIZE + tx];
+		return _bl.id != BlockID::AIR;
 	}
 
 private:

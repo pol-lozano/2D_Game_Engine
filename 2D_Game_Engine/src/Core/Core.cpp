@@ -4,7 +4,6 @@
 
 #include "../AssetManager/AssetManager.h"
 #include "../Physics/Collision.h"
-//#include "../WorldGen/Tilemap.h"
 
 #include "../ECS/Components/Sprite.h"
 #include "../ECS/Components/BoxCollider2D.h"
@@ -13,25 +12,16 @@
 #include "../ECS/Components/CharacterController2D.h"
 #include "../ECS/Components/InputHandler.h"
 #include "../ECS/Components/Text.h"
-//#include "../ECS/Components/TilemapManager.h"
-//#include "../ECS/Components/TilemapRenderer.h"
 #include "../ECS/Components/TileMap.h"
 
 Core* Core::s_instance = nullptr;
 
 Entity* player;
 Entity* tilemap;
-
 Entity* entity1;
 Entity* entity2;
 
-Core::Core()
-{
-	running = false;
-	window = nullptr;
-	renderer = nullptr;
-}
-
+Core::Core(){}
 Core::~Core(){}
 
 void Core::init()
@@ -48,6 +38,9 @@ void Core::init()
 	renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 	if (!renderer) std::cerr << SDL_GetError() << std::endl;
 
+	//Set blend mode
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
 	//Get screen size
 	display = new SDL_DisplayMode();
 	SDL_GetDisplayMode(0, 0, display);
@@ -55,7 +48,7 @@ void Core::init()
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
-	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	AssetManager::get().loadTexture("tileset", "assets/tiles.png");
 	AssetManager::get().loadTexture("test", "assets/player.png");
@@ -76,16 +69,31 @@ void Core::init()
 	//Create entity
 	player = new Entity(); 
 	auto sprite = player->addComponent<Sprite>(renderer, "test");
-	player->getComponent<Transform>().scale = Vec2F(1,1);
+	player->getComponent<Transform>().scale = Vec2F(2, 2);
 	player->addComponent<Rigidbody2D>();
 	player->addComponent<BoxCollider2D>(renderer, sprite.getWidth(), sprite.getHeight());
 	player->addComponent<InputHandler>();
-	player->addComponent<CharacterController2D>();
 	player->addComponent<Text>(renderer, 10, 10, "Test", "lazy");
-	
+	player->addComponent<CharacterController2D>();
+
+	entity1 = new Entity();
+	entity1->getComponent<Transform>().position = Vec2F(200, 100);
+	auto sprite1 = entity1->addComponent<Sprite>(renderer, "test");
+	entity1->addComponent<BoxCollider2D>(renderer, sprite1.getWidth(), sprite1.getHeight(), "wall");
+	entity1->getComponent<Transform>().scale = Vec2F(30,15);
+
+	entity2 = new Entity();
+	entity2->getComponent<Transform>().position = Vec2F(600, 150);
+	auto sprite2 = entity2->addComponent<Sprite>(renderer, "test");
+	entity2->addComponent<BoxCollider2D>(renderer, sprite2.getWidth(), sprite2.getHeight(), "wall");
+	entity2->getComponent<Transform>().scale = Vec2F(30, 15);
+
 	//TODO: Fix render queue
 	manager->addEntity(tilemap);
+	manager->addEntity(entity1);
+	manager->addEntity(entity2);
 	manager->addEntity(player);
+
 
 	clearColor = DARK;
 	running = true;
@@ -116,45 +124,80 @@ void Core::events()
 	}
 }
 
+Vec2F oldPos; 
 
 void Core::update(double dt)
 {
+	oldPos = player->getComponent<Transform>().position;;
+
 	manager->refresh();
 	manager->update(dt);	
 	
-	//Check for collisions todo fix better collision system
+	//Handle collisions
+	handleCollisions();
+
+	//Set camera position centered on player
+	setCamera(player);
+	
+	std::stringstream ss;
+	ss << static_cast<int>(player->getComponent<Transform>().position.x) << "/" << static_cast<int>(player->getComponent<Transform>().position.y);
+	player->getComponent<Text>().setText(ss.str());
+	
+}
+
+//Check for collisions todo fix better collision system
+void Core::handleCollisions() {
+
+	auto& pT = player->getComponent<Transform>();
+	auto& pPos = pT.position;
+
+	auto& pCol = player->getComponent<BoxCollider2D>();
+	auto& box = pCol.getBox();
+
+	auto& tMap = tilemap->getComponent<Tilemap>();
+
+	Vec2F test;
+
 	for (auto c : colliders) {
 		SDL_Rect overlap;
-
-		if (Collision::AABB(player->getComponent<BoxCollider2D>(), *c, overlap))
-		{
+		if (Collision::AABB(pCol, *c, overlap)) {
 			if (c->getCollisionTag() == "wall") {
-				//Resolve collision with intersection data, only correct shallow axis
-				int dir;
-				if (abs(overlap.h) <= abs(overlap.w)) {
-					dir = (overlap.y + camera->y) - player->getComponent<Transform>().position.y - overlap.h / 2 <= 0 ? 1 : -1; //Get collision direction
-					player->getComponent<Transform>().translateY(overlap.h * dir); //Correct player position
-				}
-				else {
-					dir = (overlap.x + camera->x) - player->getComponent<Transform>().position.x - overlap.w / 2 <= 0 ? 1 : -1;
-					player->getComponent<Transform>().translateX(overlap.w * dir);
+				if (pCol.resolveOverlap(overlap).length() > test.length())
+					test = pCol.resolveOverlap(overlap);
+			}
+		}
+	}
+
+	//TILEMAP COLLISION
+	Uint16 minX = pPos.x / TILE_SIZE;
+	Uint16 minY = pPos.y / TILE_SIZE;
+	Uint16 maxX = std::clamp((Uint32)(minX + (box.w / TILE_SIZE)), (Uint32)0, CHUNK_SIZE-1);
+	Uint16 maxY = std::clamp((Uint32)(minY + (box.h / TILE_SIZE)), (Uint32)0, CHUNK_SIZE-1);
+
+	Vec2F tCOld(65, 65);
+	for (Uint16 tx = minX; tx <= maxX; tx++) {
+		for (Uint16 ty = minY; ty <= maxY; ty++) {
+
+			if (tMap.isSolidTile(tx, ty)) {
+				SDL_Rect temp = { (tx)*TILE_SIZE - camera->x, (ty)*TILE_SIZE - camera->y, TILE_SIZE, TILE_SIZE };
+				SDL_Rect overlap;
+
+				if (Collision::AABB(&box, &temp, &overlap)) {
+					if (pCol.resolveOverlap(overlap).length() > test.length())
+						test = pCol.resolveOverlap(overlap);	
 				}
 			}
 		}
 	}
 
-	//Set camera position centered on player
-	setCamera(player);
-
-	std::stringstream ss;
-	ss << static_cast<int>(player->getComponent<Transform>().position.x) << "/" << static_cast<int>(player->getComponent<Transform>().position.y);
-	player->getComponent<Text>().setText(ss.str());
+	//Correct deepest collision penetration
+	pT.translate(test);
 }
 
 void Core::setCamera(Entity* target) {
 	auto transform = target->getComponent<Transform>();
 	auto sprite = target->getComponent<Sprite>();
-
+	
  	camera->x = (static_cast<int>(transform.position.x) + sprite.getWidth() / 2) - display->w / 2;
 	camera->y = (static_cast<int>(transform.position.y) + sprite.getHeight() / 2) - display->h / 2;
 }

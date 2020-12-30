@@ -1,15 +1,14 @@
 #pragma once
-#include <SDL.h>
-#include <string>
 #include "../Entity.h"
 #include "../Component.h"
+
+#include <SDL.h>
+#include <string>
 #include "../../Core/Core.h"
+#include "Rigidbody2D.h"
 
 class BoxCollider2D : public Component{
 public:
-	BoxCollider2D() = default;
-	~BoxCollider2D() = default;
-
 	BoxCollider2D(SDL_Renderer* target, int width, int height) : rTarget(target) {
 		size = { width, height };
 	}
@@ -20,6 +19,8 @@ public:
 
 	void init() override final {
 		transform = &entity->getComponent<Transform>();
+		rb = &entity->getComponent<Rigidbody2D>();
+
 		//Add to collider list 
 		Core::get().addCollider(this);
 	}
@@ -40,6 +41,26 @@ public:
 		}
 	}
 
+	Vec2F resolveOverlap(const SDL_Rect& overlap) {
+		//Do not move object if its set as kinematic
+		if (!transform->kinematic) return Vec2F();
+
+		float resolve = 0;
+		float xDiff = (box.x + (box.w * 0.5f)) - (overlap.x + (overlap.w * 0.5f)); 
+		float yDiff = (box.y + (box.h * 0.5f)) - (overlap.y + (overlap.h * 0.5f));
+
+		if (fabs(xDiff) > fabs(yDiff)) {
+			//Resolve collision on the left or right
+			resolve = (xDiff > 0) ? overlap.w : -(overlap.w);
+			return Vec2F(resolve, 0); //transform->translateX(resolve);
+		}
+		else {
+			//Resolve collision on the up or down
+			resolve = (yDiff > 0) ? overlap.h : -(overlap.h);
+			return Vec2F(0, resolve); //transform->translateY(resolve);
+		}
+	}
+
 	inline void setVisible(bool f) {
 		visible = f;
 	}
@@ -48,9 +69,15 @@ public:
 		return collisionTag;
 	}
 
+	inline SDL_Rect& getBox() {
+		return box;
+	}
+
 private:
 	friend class Collision;
 	Transform* transform = nullptr;
+	Rigidbody2D* rb = nullptr;
+
 	SDL_Renderer* rTarget = nullptr;
 	std::string collisionTag = "";
 

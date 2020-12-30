@@ -8,9 +8,6 @@
 
 class Sprite : public Component {
 public:
-	Sprite() = default;
-	~Sprite() = default;
-
 	Sprite(SDL_Renderer* target, std::string textureid) : rTarget(target), textureID(textureid) { }
 
 	void init() override final {
@@ -79,6 +76,6 @@ private:
 	SDL_Rect srcRect = { 0, 0, 0, 0 };
 	SDL_Rect dstRect = { 0, 0, 0, 0 };
 
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	SDL_RendererFlip flip = SDL_RendererFlip::SDL_FLIP_NONE;
 };
 

@@ -10,14 +10,13 @@ class EntityManager;
 //Component id
 using ComponentTypeID = std::size_t;
 
-inline ComponentTypeID getUniqueComponentTypeID(){
+inline ComponentTypeID getUniqueComponentTypeID() {
 	static ComponentTypeID lastID = 0u;
 	return lastID++;
 }
 
 template <typename T> 
-inline ComponentTypeID getComponentTypeID() noexcept
-{
+inline ComponentTypeID getComponentTypeID() noexcept {
 	static_assert(std::is_base_of<Component, T>::value, "Type not base on component!");
 	//Generate new unique id
 	static ComponentTypeID typeID = getUniqueComponentTypeID();

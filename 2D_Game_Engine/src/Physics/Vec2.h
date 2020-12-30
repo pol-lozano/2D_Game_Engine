@@ -9,7 +9,7 @@ template <class T>
 struct Vec2 {
 	T x, y;
 
-	Vec2() :x(0), y(0) {}
+	Vec2() : x(0), y(0) {}
 	Vec2(T x, T y) : x(x), y(y) {}
 	Vec2(const Vec2& v) : x(v.x), y(v.y) {}
 
@@ -20,28 +20,28 @@ struct Vec2 {
 	}
 
 	//Addition
-	Vec2 operator+(Vec2& v) {
+	Vec2 operator+(const Vec2& v) {
 		return Vec2(x + v.x, y + v.y);
 	}
 
-	Vec2 operator+(T s) {
+	Vec2 operator+(const T s) {
 		return Vec2(x + s, y + s);
 	}
 
-	Vec2& operator+=(Vec2& v) {
+	Vec2& operator+=(const Vec2& v) {
 		x += v.x;
 		y += v.y;
 		return *this;
 	}
 
-	Vec2& operator+=(T s) {
+	Vec2& operator+=(const T s) {
 		x += s;
 		y += s;
 		return *this;
 	}
 
 	//Subtraction
-	Vec2 operator-(Vec2& v) {
+	Vec2 operator-(const Vec2& v) {
 		return Vec2(x - v.x, y - v.y);
 	}
 
@@ -49,41 +49,38 @@ struct Vec2 {
 		return Vec2(x - s, y - s);
 	}
 
-	Vec2& operator-=(Vec2& v) {
+	Vec2& operator-=(const Vec2& v) {
 		x -= v.x;
 		y -= v.y;
 		return *this;
 	}
 
-	Vec2& operator-=(T s) {
+	Vec2& operator-=(const T s) {
 		x -= s;
 		y -= s;
 		return *this;
 	}
 
 	//Multiplication
-	Vec2 operator*(T s) {
+	Vec2 operator*(const T s) {
 		return Vec2(x * s, y * s);
 	}
-	Vec2& operator*=(T s) {
+
+	Vec2& operator*=(const T s) {
 		x *= s;
 		y *= s;
 		return *this;
 	}
 
 	//Division
-	Vec2 operator/(T s) {
+	Vec2 operator/(const T s) {
 		return Vec2(x / s, y / s);
 	}
-	Vec2& operator/=(T s) {
+
+	Vec2& operator/=(const T s) {
 		x /= s;
 		y /= s;
 		return *this;
-	}
-
-	void set(T x, T y) {
-		this->x = x;
-		this->y = y;
 	}
 
 	void rotate(double deg) {
