@@ -2,7 +2,7 @@
 2D Game Engine C++ SDL2
 By Pol Lozano Llorens
 
-# Controls
+## Controls
 WASD - Move
 Left MB - Place block
 Right MB - Remove block
