@@ -20,6 +20,9 @@ Middle MB - Copy block
 - TileMap (with bitmasking and basic lighting)
 - Transform
 
-AssetManger which handles loading in textures and fonts, keeping track of them as well as cleaning up after the program ends.
-Generic Vector2 class with vector math functions used for a basic physics engine.
-Accurate delta time calculation with framecapping and V-Sync. 
+## AssetManger 
+- Handles loading in textures and fonts, keeping track of them as well as cleaning up after the program ends.
+## Physics and math classes 
+- Generic Vector2 class with vector math functions used for a basic physics engine.
+- Timer class with accurate delta time calculation with framecapping and V-Sync. 
+- Collision class with AABB collision detection
