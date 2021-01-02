@@ -3,11 +3,11 @@
 By Pol Lozano Llorens
 
 ## Controls
-WASD - Move
-Left MB - Place block
-Right MB - Remove block
-Middle MB - Copy block
-1-4 - Select block type to use
+- WASD - Move
+- Left MB - Place block
+- Right MB - Remove block
+- Middle MB - Copy block
+- 1-4 - Select block type to use
 
 # Features
 ## Hybrid ECS (similar to unity's) with components:
