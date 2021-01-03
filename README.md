@@ -7,7 +7,7 @@ By Pol Lozano Llorens
 - Left MB - Place block
 - Right MB - Remove block
 - Middle MB - Copy block
-- 1-4 - Select block type to use
+- 1-5 - Select block type to use
 
 # Features
 ## Hybrid ECS (similar to unity's) with components:
