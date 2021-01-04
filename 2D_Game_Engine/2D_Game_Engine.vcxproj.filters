@@ -50,6 +50,9 @@
     <Image Include="assets\player.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\sky.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ECS\ECS.h">
@@ -109,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\lazy.ttf" />
+    <Font Include="assets\andy.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\pyxel.map" />

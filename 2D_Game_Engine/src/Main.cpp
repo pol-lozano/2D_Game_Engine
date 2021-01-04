@@ -1,22 +1,16 @@
-#include <iostream>
 #include "Core/Core.h"
 #include "Timer/Timer.h"
-#include <string>
 
 int main(int argc, char* args[]) {
 
 	Core& core = Core::get();
 	core.init();
 
-	const int FPS_TARGET{ 60 };
-	const double CYCLE_TIME{ 1.0f / FPS_TARGET };
-
 	// System timing
 	static Timer system_timer;
 	double accumulated_seconds{ 0.0f };
 
-	while (core.isRunning()) 
-	{
+	while (core.isRunning()) {
 		//Update system clock
 		system_timer.tick();
 		accumulated_seconds += system_timer.elapsed_seconds;
@@ -25,8 +19,7 @@ int main(int argc, char* args[]) {
 		core.events();
 
 		// Cap the framerate
-		while (std::isgreater(accumulated_seconds, CYCLE_TIME))
-		{
+		while (std::isgreater(accumulated_seconds, CYCLE_TIME)) {
 			// Reset the accumulator
 			accumulated_seconds = 0.0f;
 
@@ -37,9 +30,6 @@ int main(int argc, char* args[]) {
 
 			//Render loop
 			core.render();
-
-			//Display fps
-			//printf("FPS :: %lf DELTA :: %lf\r", 1.0f / physics_timer.elapsed_seconds, physics_timer.elapsed_seconds);
 		}
 	}
 

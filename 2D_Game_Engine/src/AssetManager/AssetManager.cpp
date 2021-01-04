@@ -1,5 +1,5 @@
-#include "AssetManager.h"
 #include <iostream>
+#include "AssetManager.h"
 #include "../Core/Core.h"
 
 AssetManager* AssetManager::s_instance = nullptr;
@@ -11,7 +11,7 @@ AssetManager::AssetManager(){
         std::cerr << TTF_GetError() << std::endl;
 }
 
-void AssetManager::loadTexture(std::string id, std::string path){
+void AssetManager::loadTexture(std::string id, std::string path) {
     if (textures.count(id) <= 0) {
         SDL_Texture* texture = IMG_LoadTexture(Core::get().getRenderer(), path.c_str());
         if (texture) {
@@ -27,7 +27,7 @@ SDL_Texture* AssetManager::getTexture(std::string id) {
     return (textures.count(id) > 0) ? textures[id] : nullptr;
 }
 
-void AssetManager::loadFont(std::string id, std::string path, int fontSize){
+void AssetManager::loadFont(std::string id, std::string path, int fontSize) {
     TTF_Font* newfont = TTF_OpenFont(path.c_str(), fontSize);
     if (newfont != nullptr) {
         fonts.emplace(id, newfont);
@@ -57,7 +57,7 @@ void AssetManager::clean() {
     }
 
     fonts.clear();
-    
+
     IMG_Quit();
     TTF_Quit();
 

@@ -3,7 +3,6 @@
 #include <SDL_ttf.h>
 #include <string>
 
-#include "../Entity.h"
 #include "../Component.h"
 
 class Text : public Component {
@@ -20,29 +19,26 @@ public:
 		dstRect.y = position.y;
 	}
 
-	void draw() override final {
-		SDL_RenderCopy(rTarget, texture, nullptr, &dstRect);
+	void draw() override final { 
+		SDL_RenderCopy(rTarget, texture, nullptr, &dstRect); 
 	}
 
 	inline void setText(std::string text) {
 		//Clear previous texture
-		if (texture != NULL) {
-			SDL_DestroyTexture(texture);
-		}
+		if (texture != NULL) { SDL_DestroyTexture(texture); }
 
-		SDL_Surface* surf = TTF_RenderText_Solid(font, text.c_str(), color);
+		//Generate texture from text
+		SDL_Surface* surf = TTF_RenderText_Blended(font, text.c_str(), color);
 		texture = SDL_CreateTextureFromSurface(rTarget, surf);
 		SDL_FreeSurface(surf);
 
 		SDL_QueryTexture(texture, nullptr, nullptr, &dstRect.w, &dstRect.h);
 	}
 
-	inline void setFontColor(Uint8 r, Uint8 g, Uint8 b) {
-		color = { r, g, b };
-	}
+	inline void setFontColor(Uint8 r, Uint8 g, Uint8 b) { color = { r, g, b }; }
 
 private:
-	SDL_Point position;
+	SDL_Point position = { 0, 0 };
 	SDL_Renderer* rTarget = nullptr;
 	SDL_Texture* texture = nullptr;
 

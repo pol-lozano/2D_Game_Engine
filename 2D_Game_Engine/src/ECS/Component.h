@@ -3,9 +3,6 @@ class Entity;
 
 class Component {
 public:
-	Component() = default;
-	virtual ~Component() = default;
-
 	//Components owner
 	Entity* entity = nullptr;
 

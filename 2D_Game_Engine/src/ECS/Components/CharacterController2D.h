@@ -1,5 +1,4 @@
 #pragma once
-#include "../Entity.h"
 #include "../Component.h"
 
 #include "InputHandler.h"
@@ -7,7 +6,6 @@
 class CharacterController2D : public Component {
 public:
 	void init() override final {
-		transform = &entity->getComponent<Transform>();
 		//Ensure entity has a rigidbody2D and InputHandler
 		if (!entity->hasComponent<Rigidbody2D>()) { entity->addComponent<Rigidbody2D>(); }
 		if (!entity->hasComponent<InputHandler>()) { entity->addComponent<InputHandler>(); }
@@ -28,11 +26,11 @@ public:
 		rb->setForce(Vec2F(dir.x * speed, dir.y * -speed));
 	}
 
+	void setSpeed(float f) { speed = f; }
+
 private:
-	Transform* transform;
-	Rigidbody2D* rb;
-	Sprite* sr;
 	InputHandler* input;
+	Rigidbody2D* rb;
 
 	float speed = 300; //speed in pixels per sec
 };

@@ -10,6 +10,7 @@ class EntityManager;
 //Component id
 using ComponentTypeID = std::size_t;
 
+//Generate unique unsigned id (previous id+1)
 inline ComponentTypeID getUniqueComponentTypeID() {
 	static ComponentTypeID lastID = 0u;
 	return lastID++;

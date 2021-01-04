@@ -30,6 +30,7 @@
     <Image Include="assets\grass.bmp" />
     <Image Include="assets\player.png" />
     <Image Include="assets\player_idle.png" />
+    <Image Include="assets\sky.png" />
     <Image Include="assets\tiles.png" />
     <Image Include="assets\water.bmp" />
   </ItemGroup>
@@ -54,6 +55,7 @@
     <ClInclude Include="src\Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="assets\andy.ttf" />
     <Font Include="assets\lazy.ttf" />
   </ItemGroup>
   <ItemGroup>

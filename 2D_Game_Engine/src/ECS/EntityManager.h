@@ -2,11 +2,9 @@
 #include <vector>
 #include <memory>
 #include "Entity.h"
+
 class EntityManager {
 public:
-	EntityManager() = default;
-	~EntityManager() = default;
-
 	void draw();
 	void update(float dt);
 	void refresh();

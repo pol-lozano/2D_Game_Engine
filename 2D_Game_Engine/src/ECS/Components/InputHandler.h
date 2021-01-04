@@ -1,5 +1,4 @@
 #pragma once
-#include "../Entity.h"
 #include "../Component.h"
 
 #include <SDL.h>
@@ -29,13 +28,8 @@ public:
 		m_input.lerp(m_input, m_target, dt * m_smoothing);
 	}
 
-	inline Vec2F getInput() {
-		return m_input;
-	}
-
-	inline Vec2F getInputRaw() {
-		return m_target;
-	}
+	inline Vec2F getInput() { return m_input; }
+	inline Vec2F getInputRaw() { return m_target; }
 
 private:
 	Vec2F m_input = Vec2F();

@@ -1,12 +1,12 @@
 #pragma once
 #include <SDL.h>
-#include "../ECS/EntityManager.h"
 #include <vector>
+#include "../ECS/EntityManager.h"
 
 class BoxCollider2D;
 
-constexpr int SCREEN_WIDTH = 640*2;
-constexpr int SCREEN_HEIGHT = 480*2;
+constexpr int SCREEN_WIDTH = 1280;
+constexpr int SCREEN_HEIGHT = 960;
 constexpr SDL_Color DARK = { 16,16,16,255 };
 
 class Core
@@ -14,18 +14,6 @@ class Core
 public:
 	Core();
 	~Core();
-
-	void init();
-	void quit();
-	void clean();
-
-	void events();
-	void update(double dt);
-	void render();
-
-	void handleCollisions();
-	void setCamera(Entity* target);
-	
 
 	//Singleton
 	inline static Core& get() {
@@ -35,50 +23,32 @@ public:
 		return *s_instance;
 	}
 
-	inline bool isRunning() {
-		return running;
-	}
+	void init();
+	inline void quit() { running = false; }
+	void clean();
 
-	inline SDL_Rect* getCamera() {
-		return camera;
-	}
+	void events();
+	void update(double dt);
+	void render();
 
-	inline SDL_Point getCameraPos() {
-		return SDL_Point{ camera->x, camera->y };
-	}
+	inline bool isRunning() { return running; }
+	inline SDL_Renderer* getRenderer() { return renderer; }
+	inline SDL_Event* getEvent() { return event; }
 
-	inline int camToWorldX(int x) {
-		return x + camera->x;
-	}
+	//COLLISION
+	inline std::vector<BoxCollider2D*> getColliders() { return colliders; }
+	inline void addCollider(BoxCollider2D* col) { colliders.push_back(col); }
+	void handleCollisions();
 
-	inline int camToWorldY(int y) {
-		return y + camera->y;
-	}
-
-	inline SDL_Point getScreenSize() {
-		return SDL_Point {display->w, display->h};
-	}
-
+	//CAMERA 
 	//Returns the area that the camera can see, For camera culling
-	inline SDL_Rect getVisibleArea() {
-		return SDL_Rect { camera->x, camera->y, display->w, display->h };
-	}
+	void setCamera(Entity* target);
+	void updateUI(double dt);
 
-	inline SDL_Event* getEvent() {
-		return event;
-	}
+	inline SDL_Rect getVisibleArea() { return SDL_Rect{ camera->x, camera->y, display->w, display->h }; }
 
-	inline std::vector<BoxCollider2D*> getColliders() {
-		return colliders;
-	}
-
-	inline void addCollider(BoxCollider2D* col) {
-		colliders.push_back(col);
-	}
-
-	inline SDL_Renderer* getRenderer(){
-		return renderer;
-	}
+	inline int camToWorldX(int x) { return x + camera->x; }
+	inline int camToWorldY(int y) { return y + camera->y; }
 
 private:
 	static Core* s_instance;

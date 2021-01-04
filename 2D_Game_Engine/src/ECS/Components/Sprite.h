@@ -2,7 +2,6 @@
 #include <string>
 #include <SDL.h>
 
-#include "../Entity.h"
 #include "../Component.h"
 #include "../../AssetManager/AssetManager.h"
 
@@ -28,24 +27,21 @@ public:
 	}
 
 	void update(double dt) override final {
+		const SDL_Rect visibleArea = Core::get().getVisibleArea();
+
 		dstRect.w = static_cast<int>(size.x * transform->scale.x);
 		dstRect.h = static_cast<int>(size.y * transform->scale.y);
 
-		dstRect.x = static_cast<int>(transform->position.x) - Core::get().getCamera()->x;
-		dstRect.y = static_cast<int>(transform->position.y) - Core::get().getCamera()->y;
+		dstRect.x = static_cast<int>(transform->position.x) - visibleArea.x;
+		dstRect.y = static_cast<int>(transform->position.y) - visibleArea.y;
 	}
 
-	void draw() override final {
-		SDL_RenderCopyEx(rTarget, texture, &srcRect, &dstRect, transform->rotation, NULL, flip);
+	void draw() override final { 
+		SDL_RenderCopyEx(rTarget, texture, &srcRect, &dstRect, transform->rotation, NULL, flip); 
 	}
 
-	inline int getWidth() {
-		return size.x;
-	}
-
-	inline int getHeight() {
-		return size.y;
-	}
+	inline int getWidth() { return size.x; }
+	inline int getHeight() { return size.y; }
 
 	inline Vec2F getCenter() {
 		return Vec2F(size.x * transform->scale.x / 2, size.y * transform->scale.y / 2);
@@ -76,6 +72,6 @@ private:
 	SDL_Rect srcRect = { 0, 0, 0, 0 };
 	SDL_Rect dstRect = { 0, 0, 0, 0 };
 
-	SDL_RendererFlip flip = SDL_RendererFlip::SDL_FLIP_NONE;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 };
 

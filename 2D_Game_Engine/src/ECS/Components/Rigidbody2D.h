@@ -1,5 +1,4 @@
 #pragma once
-#include "../Entity.h"
 #include "../Component.h"
 
 constexpr float MASS = 1;
@@ -18,9 +17,8 @@ public:
 		transform->translate(velocity);
 	}
 
-	void setForce(Vec2F f) {
-		force = f;
-	}
+	void setForce(Vec2F f) { force = f; }
+	void setGravity(float g) { gravity = g; }
 
 private:
 	Transform* transform = nullptr;
@@ -30,7 +28,6 @@ private:
 
 	Vec2F force = Vec2F();
 	Vec2F friction = Vec2F();
-
 	Vec2F velocity = Vec2F();
 	Vec2F acceleration = Vec2F();
 };

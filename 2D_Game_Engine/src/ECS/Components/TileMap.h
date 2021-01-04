@@ -1,19 +1,19 @@
 #pragma once
 #include <SDL.h>
-
-#include "../Component.h"
-#include "../Entity.h"
-
 #include <vector>
 #include <algorithm>
 #include <random>
+
+#include "../Component.h"
+
 
 enum BlockID : Uint16 {
 	AIR,
 	GRASS,
 	DIRT,
 	STONE,
-	WOOD
+	WOOD,
+	STONEBRICK
 };
 
 struct Block {
@@ -30,12 +30,13 @@ struct BlockInfo {
 };
 
 const Uint8 TILE_SIZE = 16;
-const Uint32 CHUNK_SIZE = 128;
+const Uint32 CHUNK_SIZE = 256;
 const Uint32 CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE;
 
 struct Chunk {
 	std::vector<Block> blocks;
 	std::vector<Uint32> lightUpdates;
+	Uint16 currentTile = 1;
 
 	void updateLight() {
 		//Get mouse position
@@ -46,20 +47,42 @@ struct Chunk {
 		Uint16 _tx = floor(Core::get().camToWorldX(MOUSE_X) / TILE_SIZE);
 		Uint16 _ty = floor(Core::get().camToWorldY(MOUSE_Y) / TILE_SIZE);
 
+		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+		//Change current tile
+		if (currentKeyStates[SDL_SCANCODE_1] || currentKeyStates[SDL_SCANCODE_2] || currentKeyStates[SDL_SCANCODE_3] || currentKeyStates[SDL_SCANCODE_4] || currentKeyStates[SDL_SCANCODE_5]) {
+			if (currentKeyStates[SDL_SCANCODE_1])
+				currentTile = 1;
+			if (currentKeyStates[SDL_SCANCODE_2])
+				currentTile = 2;
+			if (currentKeyStates[SDL_SCANCODE_3])
+				currentTile = 3;
+			if (currentKeyStates[SDL_SCANCODE_4])
+				currentTile = 4;
+			if (currentKeyStates[SDL_SCANCODE_5])
+				currentTile = 5;
+		}
+
 		//Bounds check
 		if (_tx < CHUNK_SIZE && _ty < CHUNK_SIZE) {
 			//Handle Mouse input
-			if (MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_LEFT) || MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+			if (MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_LEFT) || MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_RIGHT) || MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
 
 				//Place or remove blocks
 				switch (MOUSE_STATE) {
 				case SDL_BUTTON(SDL_BUTTON_LEFT):
+					//Place block if there is no block
 					if(blocks[_ty * CHUNK_SIZE + _tx].id == 0)
-					blocks[std::clamp(_ty * CHUNK_SIZE + _tx, (Uint32)0, CHUNK_AREA - 1)].id = BlockID::STONE;
+					blocks[std::clamp(_ty * CHUNK_SIZE + _tx, (Uint32)0, CHUNK_AREA - 1)].id = static_cast<BlockID>(currentTile);
 					break;
 				case SDL_BUTTON(SDL_BUTTON_RIGHT):
+					//Remove block if there is a block
 					if (blocks[_ty * CHUNK_SIZE + _tx].id != 0)
 					blocks[std::clamp(_ty * CHUNK_SIZE + _tx, (Uint32)0, CHUNK_AREA - 1)].id = BlockID::AIR;
+					break;
+				case SDL_BUTTON(SDL_BUTTON_MIDDLE):
+					//Copy whatever block you click on
+					if (blocks[_ty * CHUNK_SIZE + _tx].id != 0)
+						currentTile = blocks[std::clamp(_ty * CHUNK_SIZE + _tx, (Uint32)0, CHUNK_AREA - 1)].id;
 					break;
 				}
 
@@ -107,7 +130,9 @@ struct Chunk {
 					tbr = (blocks[std::clamp(((Sint32)tile + (Sint32)CHUNK_SIZE) + 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 
 					//TODO : fix proper lights
-					blocks[tile].light = (Uint8)(!tl || !tr || !tt || !tb || !ttl || !ttr || !tbl || !tbr);
+					//blocks[tile].light = (Uint8)(!tl || !tr || !tt || !tb || !ttl || !ttr || !tbl || !tbr);
+
+					blocks[tile].light = (Uint8)(!tl + !tr + !tt + !tb + !ttl + !ttr + !tbl + !tbr);
 
 					//Autotile 
 					id = blocks[tile].id;
@@ -161,13 +186,15 @@ public:
 		texture = AssetManager::get().getTexture(textureID);
 
 		//Initialize block list
-		for (Uint16 b = 0; b < 4; b++) {
+		for (Uint16 b = 0; b < 6; b++) {
 			BLOCK_LIST.push_back(Vec2<Uint16>{ 0, 0 });
 		}
 
-		BLOCK_LIST[BlockID::GRASS].tile = { 0, 0 };
-		BLOCK_LIST[BlockID::DIRT].tile = { 0, 1 };
+		BLOCK_LIST[BlockID::DIRT].tile = { 0, 0 };
+		BLOCK_LIST[BlockID::GRASS].tile = { 0, 1 };
 		BLOCK_LIST[BlockID::STONE].tile = { 0, 2 };
+		BLOCK_LIST[BlockID::WOOD].tile = { 0, 3 };
+		BLOCK_LIST[BlockID::STONEBRICK].tile = { 0, 4 };
 
 		//Initialize chunks
 		ch_ptr = std::make_shared<Chunk>();
@@ -183,22 +210,27 @@ public:
 		ch_ptr->updateLight();
 		Chunks.push_back(std::move(ch_ptr));
 	}
-	void generate() {
-		Uint16 gen_h = CHUNK_SIZE / 2;
+
+	inline void generate() {
+		Uint16 lastHeight = CHUNK_SIZE / 2;
 
 		//Random step
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<>distr(-1, 1);
 
-		//Place stone
+		//Basic generation
 		for (Uint32 x = 0; x < CHUNK_SIZE; x++) {
-			gen_h += distr(gen); //rand() % ((1 - (-1)) + 1);
+			lastHeight += distr(gen);
 			for (Uint32 y = 0; y < CHUNK_SIZE; y++)
 			{
-				if (y < gen_h) continue;
+				if (y < lastHeight) continue;
 				auto& _bl = ch_ptr->blocks[y * CHUNK_SIZE + x];
-				_bl.id = BlockID::STONE;
+				_bl.id = BlockID::GRASS;
+				
+				if (y - 10 < lastHeight) continue;
+					_bl = ch_ptr->blocks[y + 10 * CHUNK_SIZE + x];
+					_bl.id = BlockID::STONE;
 			}
 		}
 	}
@@ -232,12 +264,9 @@ public:
 					auto& _bl = ch_ptr->blocks[ty * CHUNK_SIZE + tx];
 
 					if (_bl.id == BlockID::AIR) continue;
-					//if (_bl.light == 0) continue;
 
-					switch (_bl.light) {
-						case 0: SDL_SetTextureColorMod(texture, 128, 128, 128); break; // 50% light
-						default: SDL_SetTextureColorMod(texture, 255, 255, 255); break; // 100 % light
-					}
+					Uint8 _light = std::clamp((255 * _bl.light / 8) + 128, 0, 255);
+					SDL_SetTextureColorMod(texture, _light, _light, _light);
 
 					tr.x = floor((tx * TILE_SIZE) - visibleArea.x);
 					tr.y = floor((ty * TILE_SIZE) - visibleArea.y);
@@ -262,25 +291,55 @@ public:
 			tr.x = (int)floor((_tx * TILE_SIZE) - visibleArea.x);
 			tr.y = (int)floor((_ty * TILE_SIZE) - visibleArea.y);
 
-			SDL_SetRenderDrawColor(rTarget, 86, 214, 255, 255);
-			SDL_RenderDrawRect(rTarget, &tr);
-			SDL_RenderDrawLine(rTarget, tr.x + TILE_SIZE/2, tr.y + TILE_SIZE/2, visibleArea.w/2,  visibleArea.h/2);
+			//SDL_SetRenderDrawColor(rTarget, 86, 214, 255, 255);
+			//SDL_RenderDrawRect(rTarget, &tr);
+
+			if(Chunks[0]->blocks[_ty * CHUNK_SIZE + _tx].id == BlockID::AIR) { SDL_SetTextureColorMod(texture, 128, 255, 128); }
+			else { SDL_SetTextureColorMod(texture, 255, 0, 128); }
+
+			int currentTile = Chunks[0]->currentTile;
+			SDL_SetTextureAlphaMod(texture, 150);
+			drawSpriteClip(texture, ((BLOCK_LIST[currentTile].tile.x) * TILE_SIZE), ((BLOCK_LIST[currentTile].tile.y) * TILE_SIZE), &tr);
+			SDL_SetTextureAlphaMod(texture, 255);
+
+			tr.x = TILE_SIZE * 8;
+			tr.y = TILE_SIZE * 2;
+
+			//Display current tile
+			SDL_SetTextureColorMod(texture, 255, 255, 255);
+			drawSpriteClip(texture, ((BLOCK_LIST[currentTile].tile.x) * TILE_SIZE), ((BLOCK_LIST[currentTile].tile.y) * TILE_SIZE), &tr);
 		} 
 	}
 	
-	void drawSpriteClip(SDL_Texture* tex, Uint16 srcX, Uint16 srcY, SDL_Rect* dstRect) {
+	inline void drawSpriteClip(SDL_Texture* tex, Uint16 srcX, Uint16 srcY, SDL_Rect* dstRect) {
 		SDL_Rect srcRect = { srcX, srcY, TILE_SIZE, TILE_SIZE };
 		SDL_RenderCopy(rTarget, texture, &srcRect, dstRect);
 	}
 
 	//checks only first chunk gotta fix
-	bool isSolidTile(Uint16 tx, Uint16 ty) {
+	inline bool isSolidTile(Uint16 tx, Uint16 ty) {
 		auto& ch_ptr = Chunks[0];
 
 		//Bounds check
 		if (tx < 0 || ty < 0 || tx > CHUNK_SIZE - 1 || ty > CHUNK_SIZE - 1) return true;
 		auto& _bl = ch_ptr->blocks[ty * CHUNK_SIZE + tx];
 		return _bl.id != BlockID::AIR;
+	}
+
+	inline int getCurrentTile() {
+		auto& ch_ptr = Chunks[0];
+		return ch_ptr->currentTile;
+	}
+
+	//Used for spawning the player in a proper location
+	inline int getHighestPoint(Uint16 tx) {
+		auto& ch_ptr = Chunks[0];
+		if (tx < 0 || tx > CHUNK_SIZE - 1) return 0;
+		for (Uint32 ty = 0; ty < CHUNK_SIZE; ty++){
+			auto& _bl = ch_ptr->blocks[ty * CHUNK_SIZE + tx];
+			if (_bl.id != 0) return ty - 2;
+		}
+		return CHUNK_SIZE;
 	}
 
 private:

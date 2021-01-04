@@ -6,20 +6,9 @@
 #include "Components/Transform.h"
 
 class Entity {
-private:
-	bool active = true;
-	std::vector<std::unique_ptr<Component>> components;
-
-	ComponentArray componentArray;
-	ComponentBitSet componentBitset;
-
 public:
-	Entity(){
-		//All entities have a transform just like in unity!
-		this->addComponent<Transform>(0, 0);
-	}
-
-	virtual ~Entity() = default;
+	//All entities have a transform just like in unity!
+	Entity() { this->addComponent<Transform>(0, 0); }
 
 	template <typename T, typename... TArgs>
 	inline T& addComponent(TArgs&&... mArgs)
@@ -63,4 +52,11 @@ public:
 		//Draw all components that need to be drawn
 		for (auto& c : components) c->draw();
 	}
+
+private:
+	bool active = true;
+	std::vector<std::unique_ptr<Component>> components;
+
+	ComponentArray componentArray;
+	ComponentBitSet componentBitset;
 };
