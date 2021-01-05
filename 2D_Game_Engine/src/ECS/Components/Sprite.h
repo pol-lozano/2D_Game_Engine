@@ -42,10 +42,7 @@ public:
 
 	inline int getWidth() { return size.x; }
 	inline int getHeight() { return size.y; }
-
-	inline Vec2F getCenter() {
-		return Vec2F(size.x * transform->scale.x / 2, size.y * transform->scale.y / 2);
-	}
+	inline Vec2F getCenter() { return Vec2F((size.x * transform->scale.x) / 2, (size.y * transform->scale.y) / 2); }
 
 	//Set color
 	inline void setColor(Uint8 r, Uint8 g, Uint8 b) {

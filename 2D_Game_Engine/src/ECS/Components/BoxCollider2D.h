@@ -1,9 +1,7 @@
 #pragma once
 #include "../Component.h"
-
-#include <SDL.h>
-#include <string>
 #include "../../Core/Core.h"
+#include <string>
 #include "Rigidbody2D.h"
 
 class BoxCollider2D : public Component{
@@ -13,6 +11,7 @@ public:
 
 	void init() override final {
 		transform = &entity->getComponent<Transform>();
+		if (!entity->hasComponent<Rigidbody2D>()) { entity->addComponent<Rigidbody2D>(); }
 		rb = &entity->getComponent<Rigidbody2D>();
 
 		//Add to collider list 

@@ -38,7 +38,7 @@ public:
 	//COLLISION
 	inline std::vector<BoxCollider2D*> getColliders() { return colliders; }
 	inline void addCollider(BoxCollider2D* col) { colliders.push_back(col); }
-	void handleCollisions();
+	void handleCollisions(double dt);
 
 	//CAMERA 
 	//Returns the area that the camera can see, For camera culling

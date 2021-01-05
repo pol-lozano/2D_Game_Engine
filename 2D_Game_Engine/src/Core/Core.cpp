@@ -12,7 +12,7 @@
 #include "../ECS/Components/CharacterController2D.h"
 #include "../ECS/Components/InputHandler.h"
 #include "../ECS/Components/Text.h"
-#include "../ECS/Components/TileMap.h"
+#include "../ECS/Components/Tilemap/TileMap.h"
 
 Core* Core::s_instance = nullptr;
 
@@ -56,7 +56,7 @@ void Core::init() {
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	//Load media
 	AssetManager::get().loadTexture("tileset", "assets/tiles.png");
@@ -174,20 +174,28 @@ void Core::events() {
 	}
 }
 
+double dirTimer = 0;
 void Core::update(double dt) {
 	manager->refresh();
 	manager->update(dt);	
 	updateUI(dt);
 
+	/*dirTimer += dt;
+	if (dirTimer > 3) {
+		dirTimer = 0;
+		std::cout << "3" << std::endl;
+		pickup1->getComponent<Rigidbody2D>().setRandomForce();
+	}*/
+
 	//Handle collisions
-	handleCollisions();
+	handleCollisions(dt);
 
 	//Set camera position centered on player
 	setCamera(player);
 }
 
 //Check for collisions TODO: fix better collision system
-void Core::handleCollisions() {
+void Core::handleCollisions(double dt) {
 
 	auto& pT = player->getComponent<Transform>();
 	auto& pPos = pT.position;
@@ -197,22 +205,30 @@ void Core::handleCollisions() {
 
 	auto& tMap = tilemap->getComponent<Tilemap>();
 
-	Vec2F test;
+	Vec2F p;
 
 	//BOXCOLLIDER2D COLLISION
+	SDL_Rect overlap;
 	for (auto c : colliders) {
-		SDL_Rect overlap;
+		if (c->getCollisionTag() == "pickup") {
+			auto& cPos = c->entity->getComponent<Transform>().position;
+			//Move pickups towards player if in range
+			if (pPos.dist(cPos) < 300) {
+				c->entity->getComponent<Transform>().moveTowards(pPos, dt);
+			}
+		}
+
 		//PLAYER
 		if (Collision::AABB(pCol, *c, overlap)) {
 			if (c->getCollisionTag() == "wall") {
-				if (pCol.resolveOverlap(overlap).length() > test.length())
-					test = pCol.resolveOverlap(overlap);
+				if (pCol.resolveOverlap(overlap).length() > p.length())
+					p = pCol.resolveOverlap(overlap);
 			}
 			if (c->getCollisionTag() == "pickup") {
-				if (pCol.resolveOverlap(overlap).length() > test.length())
-					test = pCol.resolveOverlap(overlap);
-				//Add pickup
-
+				if (pCol.resolveOverlap(overlap).length() > p.length())
+					p = pCol.resolveOverlap(overlap);
+				//Add pickup to player inventory
+				pCol.entity->getComponent<CharacterController2D>().addPickup();
 				//Destroy entity
 				c->entity->destroy();
 				//remove this collider from list
@@ -235,15 +251,15 @@ void Core::handleCollisions() {
 				SDL_Rect overlap;
 
 				if (Collision::AABB(&box, &temp, &overlap)) {
-					if (pCol.resolveOverlap(overlap).length() > test.length())
-						test = pCol.resolveOverlap(overlap);	
+					if (pCol.resolveOverlap(overlap).length() > p.length())
+						p = pCol.resolveOverlap(overlap);	
 				}
 			}
 		}
 	}
 
 	//Correct only deepest collision penetration (BUGGED)
-	pT.translate(test);
+	pT.translate(p);
 }
 
 void Core::updateUI(double dt) {
@@ -253,11 +269,18 @@ void Core::updateUI(double dt) {
 	player->getComponent<Text>().setText(ss.str());
 
 	std::stringstream ss2;
-	int tileID = tilemap->getComponent<Tilemap>().getCurrentTile();
-	ss2 << "Chunk Size: " << (int)CHUNK_SIZE << " Tile Size: " << (int)TILE_SIZE;
+	int pickupsAmount = player->getComponent<CharacterController2D>().getPickupsAmount();
+	if (pickupsAmount < 5) {
+		ss2 << "Pickups collected: " << pickupsAmount << "/5";
+	}
+	else {
+		ss2 << "You won!";
+	}
 	uiLabel->getComponent<Text>().setText(ss2.str());
+	uiLabel->getComponent<Text>().setTextPos(camera->w / 2 - uiLabel->getComponent<Text>().getWidth() / 2, 16);
 
 	std::stringstream ss3;
+	int tileID = tilemap->getComponent<Tilemap>().getCurrentTile();
 	ss3 << "Current Tile ID: " << tileID;
 	tilemap->getComponent<Text>().setText(ss3.str());
 }

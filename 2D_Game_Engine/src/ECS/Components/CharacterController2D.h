@@ -27,10 +27,13 @@ public:
 	}
 
 	void setSpeed(float f) { speed = f; }
+	void addPickup() { pickups++; }
+	int getPickupsAmount() { return pickups; }
 
 private:
 	InputHandler* input;
 	Rigidbody2D* rb;
 
 	float speed = 300; //speed in pixels per sec
+	int pickups = 0;
 };

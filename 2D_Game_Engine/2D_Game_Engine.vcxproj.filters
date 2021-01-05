@@ -106,7 +106,10 @@
     <ClInclude Include="src\ECS\Components\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Components\TileMap.h">
+    <ClInclude Include="src\ECS\Components\Tilemap\TileMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\Tilemap\Chunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

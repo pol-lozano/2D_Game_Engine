@@ -5,7 +5,6 @@
 #include <string>
 #include <iomanip>
 
-
 class InputHandler : public Component {
 public:
 	void update(double dt) override final {

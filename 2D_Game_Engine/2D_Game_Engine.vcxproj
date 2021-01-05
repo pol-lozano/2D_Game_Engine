@@ -41,7 +41,8 @@
     <ClInclude Include="src\ECS\Components\Rigidbody2D.h" />
     <ClInclude Include="src\ECS\Components\Text.h" />
     <ClInclude Include="src\ECS\Components\Map.h" />
-    <ClInclude Include="src\ECS\Components\TileMap.h" />
+    <ClInclude Include="src\ECS\Components\Tilemap\Chunk.h" />
+    <ClInclude Include="src\ECS\Components\Tilemap\TileMap.h" />
     <ClInclude Include="src\ECS\EntityManager.h" />
     <ClInclude Include="src\ECS\Component.h" />
     <ClInclude Include="src\ECS\Components\Sprite.h" />

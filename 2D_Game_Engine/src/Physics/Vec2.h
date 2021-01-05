@@ -40,6 +40,11 @@ struct Vec2 {
 		return *this;
 	}
 
+	//Negative
+	Vec2 operator-()  {
+		return Vec2(-x, -y);
+	}
+
 	//Subtraction
 	Vec2 operator-(const Vec2& v) {
 		return Vec2(x - v.x, y - v.y);
