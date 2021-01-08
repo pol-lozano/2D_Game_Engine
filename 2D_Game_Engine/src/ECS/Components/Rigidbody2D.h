@@ -19,8 +19,8 @@ public:
 
 	void setForce(Vec2F f) { force = f; }
 	void setGravity(float g) { gravity = g; }
-	void setRandomForce() {
-		force = randomDir() * 50;
+	void setRandomForce(float f) {
+		force = randomDir() * f;
 	}
 
 	Vec2F randomDir() {

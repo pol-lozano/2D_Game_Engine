@@ -16,19 +16,16 @@
 
 Core* Core::s_instance = nullptr;
 
+//Entity pointers
 Entity* player;
 Entity* tilemap;
 Entity* background;
 Entity* uiLabel;
-
 Entity* pickup1;
 Entity* pickup2;
 Entity* pickup3;
 Entity* pickup4;
 Entity* pickup5;
-
-Core::Core(){}
-Core::~Core(){}
 
 void Core::init() {
 	//Initialize SDL
@@ -56,12 +53,14 @@ void Core::init() {
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
-	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	//Load media
 	AssetManager::get().loadTexture("tileset", "assets/tiles.png");
 	AssetManager::get().loadTexture("sky", "assets/sky.png");
 	AssetManager::get().loadTexture("test", "assets/player.png");
+	AssetManager::get().loadTexture("star", "assets/star.png");
+
 	AssetManager::get().loadFont("andy", "assets/andy.ttf", 16);
 
 	//Create manager
@@ -78,7 +77,6 @@ void Core::init() {
 	player = new Entity(); 
 	auto sprite = player->addComponent<Sprite>(renderer, "test");
 	player->getComponent<Transform>().scale = Vec2F(2, 2);
-
 	//Spawn player in the middle of the map
 	player->getComponent<Transform>().position = Vec2F((CHUNK_SIZE / 2) * TILE_SIZE, map.getHighestPoint(CHUNK_SIZE / 2) * TILE_SIZE);
 	player->addComponent<Rigidbody2D>();
@@ -99,33 +97,28 @@ void Core::init() {
 	//Pickups
 	pickup1 = new Entity();
 	pickup1->getComponent<Transform>().position = Vec2F((CHUNK_SIZE / 3) * TILE_SIZE, map.getHighestPoint(CHUNK_SIZE / 3) * TILE_SIZE);
-	auto pickup1sprite = pickup1->addComponent<Sprite>(renderer, "test");
+	auto pickup1sprite = pickup1->addComponent<Sprite>(renderer, "star");
 	pickup1->addComponent<BoxCollider2D>(renderer, pickup1sprite.getWidth(), pickup1sprite.getHeight(), "pickup");
-	pickup1->getComponent<Transform>().scale = Vec2F(2, 2);
 
 	pickup2 = new Entity();
 	pickup2->getComponent<Transform>().position = Vec2F((CHUNK_SIZE -(CHUNK_SIZE / 3)) * TILE_SIZE, map.getHighestPoint(CHUNK_SIZE- (CHUNK_SIZE / 3)) * TILE_SIZE);
-	auto pickup2sprite = pickup2->addComponent<Sprite>(renderer, "test");
+	auto pickup2sprite = pickup2->addComponent<Sprite>(renderer, "star");
 	pickup2->addComponent<BoxCollider2D>(renderer, pickup2sprite.getWidth(), pickup2sprite.getHeight(), "pickup");
-	pickup2->getComponent<Transform>().scale = Vec2F(2, 2);
 
 	pickup3 = new Entity();
 	pickup3->getComponent<Transform>().position = Vec2F((CHUNK_SIZE / 5) * TILE_SIZE, map.getHighestPoint(CHUNK_SIZE / 5) * TILE_SIZE);
-	auto pickup3sprite = pickup3->addComponent<Sprite>(renderer, "test");
+	auto pickup3sprite = pickup3->addComponent<Sprite>(renderer, "star");
 	pickup3->addComponent<BoxCollider2D>(renderer, pickup3sprite.getWidth(), pickup3sprite.getHeight(), "pickup");
-	pickup3->getComponent<Transform>().scale = Vec2F(2, 2);
 
 	pickup4 = new Entity();
 	pickup4->getComponent<Transform>().position = Vec2F((CHUNK_SIZE - (CHUNK_SIZE / 6)) * TILE_SIZE, map.getHighestPoint(CHUNK_SIZE - (CHUNK_SIZE / 6)) * TILE_SIZE);
-	auto pickup4sprite = pickup4->addComponent<Sprite>(renderer, "test");
+	auto pickup4sprite = pickup4->addComponent<Sprite>(renderer, "star");
 	pickup4->addComponent<BoxCollider2D>(renderer, pickup4sprite.getWidth(), pickup4sprite.getHeight(), "pickup");
-	pickup4->getComponent<Transform>().scale = Vec2F(2, 2);
 
 	pickup5 = new Entity();
 	pickup5->getComponent<Transform>().position = Vec2F((CHUNK_SIZE / 7) * TILE_SIZE, map.getHighestPoint(CHUNK_SIZE / 7) * TILE_SIZE);
-	auto pickup5sprite = pickup5->addComponent<Sprite>(renderer, "test");
+	auto pickup5sprite = pickup5->addComponent<Sprite>(renderer, "star");
 	pickup5->addComponent<BoxCollider2D>(renderer, pickup5sprite.getWidth(), pickup5sprite.getHeight(), "pickup");
-	pickup5->getComponent<Transform>().scale = Vec2F(2, 2);
 
 	//TODO: Fix render queue
 	manager->addEntity(background);
@@ -174,18 +167,10 @@ void Core::events() {
 	}
 }
 
-double dirTimer = 0;
 void Core::update(double dt) {
 	manager->refresh();
 	manager->update(dt);	
 	updateUI(dt);
-
-	/*dirTimer += dt;
-	if (dirTimer > 3) {
-		dirTimer = 0;
-		std::cout << "3" << std::endl;
-		pickup1->getComponent<Rigidbody2D>().setRandomForce();
-	}*/
 
 	//Handle collisions
 	handleCollisions(dt);
@@ -194,6 +179,7 @@ void Core::update(double dt) {
 	setCamera(player);
 }
 
+double dirTimer = 3;
 //Check for collisions TODO: fix better collision system
 void Core::handleCollisions(double dt) {
 
@@ -206,6 +192,17 @@ void Core::handleCollisions(double dt) {
 	auto& tMap = tilemap->getComponent<Tilemap>();
 
 	Vec2F p;
+
+	dirTimer += dt;
+	//Randomly move pickups every 3 seconds
+	if (dirTimer > 3) {
+		dirTimer = 0;
+		for (auto c : colliders) {
+			if (c->getCollisionTag() == "pickup") {
+				c->entity->getComponent<Rigidbody2D>().setRandomForce(25);
+			}
+		}
+	}
 
 	//BOXCOLLIDER2D COLLISION
 	SDL_Rect overlap;
@@ -240,8 +237,8 @@ void Core::handleCollisions(double dt) {
 	//TILEMAP COLLISION
 	Uint16 minX = pPos.x / TILE_SIZE;
 	Uint16 minY = pPos.y / TILE_SIZE;
-	Uint16 maxX = std::clamp((Uint32)(minX + (box.w / TILE_SIZE)), (Uint32)0, CHUNK_SIZE-1);
-	Uint16 maxY = std::clamp((Uint32)(minY + (box.h / TILE_SIZE)), (Uint32)0, CHUNK_SIZE-1);
+	Uint16 maxX = std::clamp((Uint32)(minX + (box.w / TILE_SIZE)), (Uint32)0, CHUNK_SIZE - 1);
+	Uint16 maxY = std::clamp((Uint32)(minY + (box.h / TILE_SIZE)), (Uint32)0, CHUNK_SIZE - 1);
 
 	for (Uint16 tx = minX; tx <= maxX; tx++) {
 		for (Uint16 ty = minY; ty <= maxY; ty++) {
@@ -252,7 +249,7 @@ void Core::handleCollisions(double dt) {
 
 				if (Collision::AABB(&box, &temp, &overlap)) {
 					if (pCol.resolveOverlap(overlap).length() > p.length())
-						p = pCol.resolveOverlap(overlap);	
+						p = pCol.resolveOverlap(overlap);
 				}
 			}
 		}

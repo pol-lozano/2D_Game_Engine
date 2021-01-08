@@ -11,6 +11,7 @@ AssetManager::AssetManager(){
         std::cerr << TTF_GetError() << std::endl;
 }
 
+//Load texture from path and store it in a map
 void AssetManager::loadTexture(std::string id, std::string path) {
     if (textures.count(id) <= 0) {
         SDL_Texture* texture = IMG_LoadTexture(Core::get().getRenderer(), path.c_str());
@@ -18,28 +19,27 @@ void AssetManager::loadTexture(std::string id, std::string path) {
             textures[id] = texture;
             printf("Texture: [%s] successfully loaded!\n", path.c_str());
         }
-        else
+        else 
             std::cerr << IMG_GetError() << std::endl;
     }
 }
 
-SDL_Texture* AssetManager::getTexture(std::string id) {
-    return (textures.count(id) > 0) ? textures[id] : nullptr;
-}
+//Retrieve image from map by string id
+SDL_Texture* AssetManager::getTexture(std::string id) { return (textures.count(id) > 0) ? textures[id] : nullptr; }
 
+//Load front from map and store it in map
 void AssetManager::loadFont(std::string id, std::string path, int fontSize) {
     TTF_Font* newfont = TTF_OpenFont(path.c_str(), fontSize);
     if (newfont != nullptr) {
         fonts.emplace(id, newfont);
         printf("Font: [%s] successfully loaded!\n", path.c_str());
     }
-    else
+    else 
         std::cerr << TTF_GetError() << std::endl;
 }
 
-TTF_Font* AssetManager::getFont(std::string id) {
-    return (fonts.count(id) > 0) ? fonts[id] : nullptr;
-}
+//Retrieve font from map by string id
+TTF_Font* AssetManager::getFont(std::string id) { return (fonts.count(id) > 0) ? fonts[id] : nullptr; }
 
 void AssetManager::clean() {
     //Clear all textures

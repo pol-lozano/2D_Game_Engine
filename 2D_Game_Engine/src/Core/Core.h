@@ -7,13 +7,13 @@ class BoxCollider2D;
 
 constexpr int SCREEN_WIDTH = 1280;
 constexpr int SCREEN_HEIGHT = 960;
-constexpr SDL_Color DARK = { 16,16,16,255 };
+constexpr SDL_Color DARK = { 16, 16, 16, 255 };
 
 class Core
 {
 public:
-	Core();
-	~Core();
+	Core() = default;
+	~Core() = default;
 
 	//Singleton
 	inline static Core& get() {
