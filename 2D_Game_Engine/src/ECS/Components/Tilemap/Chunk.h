@@ -48,59 +48,34 @@ struct Chunk {
 		Uint16 _tx = floor(Core::get().camToWorldX(MOUSE_X) / TILE_SIZE);
 		Uint16 _ty = floor(Core::get().camToWorldY(MOUSE_Y) / TILE_SIZE);
 
-		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-
-		//Change current tile
-		if (currentKeyStates[SDL_SCANCODE_1])
-			currentTile = 1;
-		if (currentKeyStates[SDL_SCANCODE_2])
-			currentTile = 2;
-		if (currentKeyStates[SDL_SCANCODE_3])
-			currentTile = 3;
-		if (currentKeyStates[SDL_SCANCODE_4])
-			currentTile = 4;
-		if (currentKeyStates[SDL_SCANCODE_5])
-			currentTile = 5;
-		if (currentKeyStates[SDL_SCANCODE_6])
-			currentTile = 6;
-		if (currentKeyStates[SDL_SCANCODE_7])
-			currentTile = 7;
-		if (currentKeyStates[SDL_SCANCODE_8])
-			currentTile = 8;
+		//Get user input to select current tile
+		getCurrentTile();
 
 		//Bounds check
 		if (_tx < CHUNK_SIZE && _ty < CHUNK_SIZE) {
 			//Handle Mouse input
 			if (MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_LEFT) || MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_RIGHT) || MOUSE_STATE == SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
-
+				//Get current block
+				auto& bl = blocks[std::clamp(_ty * CHUNK_SIZE + _tx, 0u, CHUNK_AREA - 1)];
 				//Place or remove blocks
 				switch (MOUSE_STATE) {
-				case SDL_BUTTON(SDL_BUTTON_LEFT):
 					//Place block if there is no block
-					if (blocks[_ty * CHUNK_SIZE + _tx].id == 0)
-						blocks[std::clamp(_ty * CHUNK_SIZE + _tx, 0u, CHUNK_AREA - 1)].id = static_cast<BlockID>(currentTile);
-					break;
-				case SDL_BUTTON(SDL_BUTTON_RIGHT):
+					case SDL_BUTTON(SDL_BUTTON_LEFT): if (bl.id == 0) bl.id = static_cast<BlockID>(currentTile); break;
 					//Remove block if there is a block
-					if (blocks[_ty * CHUNK_SIZE + _tx].id != 0)
-						blocks[std::clamp(_ty * CHUNK_SIZE + _tx, 0u, CHUNK_AREA - 1)].id = BlockID::AIR;
-					break;
-				case SDL_BUTTON(SDL_BUTTON_MIDDLE):
-					//Copy whatever block you click on
-					if (blocks[_ty * CHUNK_SIZE + _tx].id != 0)
-						currentTile = blocks[std::clamp(_ty * CHUNK_SIZE + _tx, 0u, CHUNK_AREA - 1)].id;
-					break;
+					case SDL_BUTTON(SDL_BUTTON_RIGHT): if (bl.id != 0) bl.id = BlockID::AIR; break;
+					//Copy whatever block you middle click on
+					case SDL_BUTTON(SDL_BUTTON_MIDDLE): if (bl.id != 0) currentTile = bl.id; break;
 				}
 
 				//Push to light update queue
 				//Update self
 				lightUpdates.push_back(std::clamp(_ty * CHUNK_SIZE + _tx, 0u, CHUNK_AREA - 1));
-
+				//Sides
 				lightUpdates.push_back(std::clamp(_ty * CHUNK_SIZE + (_tx + 1), 0u, CHUNK_AREA - 1));
 				lightUpdates.push_back(std::clamp(_ty * CHUNK_SIZE + (_tx - 1), 0u, CHUNK_AREA - 1));
 				lightUpdates.push_back(std::clamp((_ty + 1) * CHUNK_SIZE + (_tx), 0u, CHUNK_AREA - 1));
 				lightUpdates.push_back(std::clamp((_ty - 1) * CHUNK_SIZE + (_tx), 0u, CHUNK_AREA - 1));
-
+				//Corners
 				lightUpdates.push_back(std::clamp((_ty - 1) * CHUNK_SIZE + (_tx - 1), 0u, CHUNK_AREA - 1));
 				lightUpdates.push_back(std::clamp((_ty - 1) * CHUNK_SIZE + (_tx + 1), 0u, CHUNK_AREA - 1));
 				lightUpdates.push_back(std::clamp((_ty + 1) * CHUNK_SIZE + (_tx - 1), 0u, CHUNK_AREA - 1));
@@ -108,52 +83,30 @@ struct Chunk {
 			}
 
 			if (!lightUpdates.empty()) {
-
 				Uint32 lu_s = lightUpdates.size();
-				BlockID id = BlockID::AIR;
 				Uint32 tile;
-				Uint8 sub;
-
-				Uint32 tl, tr, tt, tb;
-				Uint32 ttl, ttr, tbl, tbr;
+				Uint8 tl, tr, tt, tb;
+				Uint8 ttl, ttr, tbl, tbr;
 
 				//Update tiles in update queue
 				for (Uint32 l = 0; l < lu_s; l++) {
-					//Light update
-
 					tile = lightUpdates.back();
 					lightUpdates.pop_back();
-
+					//Sides
 					tl = (blocks[std::clamp((Sint32)tile - 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 					tr = (blocks[std::clamp((Sint32)tile + 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 					tt = (blocks[std::clamp((Sint32)tile - (Sint32)CHUNK_SIZE, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 					tb = (blocks[std::clamp((Sint32)tile + (Sint32)CHUNK_SIZE, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
-
 					//Corners
 					ttl = (blocks[std::clamp(((Sint32)tile - (Sint32)CHUNK_SIZE) - 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 					ttr = (blocks[std::clamp(((Sint32)tile - (Sint32)CHUNK_SIZE) + 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 					tbl = (blocks[std::clamp(((Sint32)tile + (Sint32)CHUNK_SIZE) - 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 					tbr = (blocks[std::clamp(((Sint32)tile + (Sint32)CHUNK_SIZE) + 1, 0, (Sint32)CHUNK_AREA - 1)].id != BlockID::AIR);
 
-					//TODO : fix proper lights
-					//blocks[tile].light = (Uint8)(!tl || !tr || !tt || !tb || !ttl || !ttr || !tbl || !tbr);
-
-					blocks[tile].light = (Uint8)(!tl + !tr + !tt + !tb + !ttl + !ttr + !tbl + !tbr);
-
-					//Autotile 
-					id = blocks[tile].id;
-
-					if (id == BlockID::AIR) continue;
-
-					sub = (Uint8)(tt + (tr << 1) + (tb << 2) + (tl << 3));
-
-					/* //CORNERS
-						if (sub == 15 && (ttl || ttr || tbl || tbr)) {
-							sub += (Uint8)(ttl + (ttr << 1) + (tbr << 2) + (tbl << 3));
-						}
-					*/
-
-					blocks[tile].sub = sub;
+					//Autotile and set lights
+					auto& bl = blocks[tile];
+					bl.light = static_cast<Uint8>(!tl + !tr + !tt + !tb + !ttl + !ttr + !tbl + !tbr);
+					if (bl.id != BlockID::AIR) bl.sub = static_cast<Uint8>((tt + (tr << 1) + (tb << 2) + (tl << 3)));
 				}
 			}
 		}
@@ -161,23 +114,25 @@ struct Chunk {
 
 	//Autotile chunk
 	inline void autoTile() {
-		BlockID id = AIR;
-		Uint8 sub;
+		Uint32 tile;
+		Uint8 tl, tr, tt, tb;
 
 		for (Uint16 y = 1; y < CHUNK_SIZE - 1; y++) {
 			for (Uint16 x = 1; x < CHUNK_SIZE - 1; x++) {
-				//Get tile id
-				id = blocks[y * CHUNK_SIZE + x].id;
+				//get tile position
+				tile = y * CHUNK_SIZE + x;
+				auto& bl = blocks[tile];
 
-				if (id <= 0) continue;
+				//Skip empty positions
+				if (bl.id == BlockID::AIR) continue;
+
+				tl = (blocks[tile - 1].id != BlockID::AIR);
+				tr = (blocks[tile + 1].id != BlockID::AIR);
+				tt = (blocks[tile - CHUNK_SIZE].id != BlockID::AIR);
+				tb = (blocks[tile + CHUNK_SIZE].id != BlockID::AIR);
 
 				//Calculate subvalue with bitshifting
-				sub = ((Uint8)(blocks[(y - 1) * CHUNK_SIZE + (x)].id != BlockID::AIR)) +
-					((Uint8)(blocks[(y)*CHUNK_SIZE + (x + 1)].id != BlockID::AIR) << 1) +
-					((Uint8)(blocks[(y + 1) * CHUNK_SIZE + (x)].id != BlockID::AIR) << 2) +
-					((Uint8)(blocks[(y)*CHUNK_SIZE + (x - 1)].id != BlockID::AIR) << 3);
-
-				blocks[y * CHUNK_SIZE + x].sub = sub;
+				bl.sub = static_cast<Uint8>(tt + (tr << 1) + (tb << 2) + (tl << 3));
 			}
 		}
 	}
@@ -308,5 +263,28 @@ struct Chunk {
 			if (_bl.id != 0) return ty;
 		}
 		return CHUNK_SIZE;
+	}
+
+	inline void getCurrentTile() {
+		SDL_PumpEvents();
+		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+
+		//Change current tile
+		if (currentKeyStates[SDL_SCANCODE_1])
+			currentTile = 1;
+		if (currentKeyStates[SDL_SCANCODE_2])
+			currentTile = 2;
+		if (currentKeyStates[SDL_SCANCODE_3])
+			currentTile = 3;
+		if (currentKeyStates[SDL_SCANCODE_4])
+			currentTile = 4;
+		if (currentKeyStates[SDL_SCANCODE_5])
+			currentTile = 5;
+		if (currentKeyStates[SDL_SCANCODE_6])
+			currentTile = 6;
+		if (currentKeyStates[SDL_SCANCODE_7])
+			currentTile = 7;
+		if (currentKeyStates[SDL_SCANCODE_8])
+			currentTile = 8;
 	}
 };

@@ -3,7 +3,6 @@
 
 constexpr float MASS = 1;
 constexpr float GRAVITY = 0;
-
 class Rigidbody2D : public Component {
 public:
 	void init() override final {
@@ -19,21 +18,15 @@ public:
 
 	void setForce(Vec2F f) { force = f; }
 	void setGravity(float g) { gravity = g; }
-	void setRandomForce(float f) {
-		force = randomDir() * f;
-	}
+	void setRandomForce(float f) { setForce(randomDir() * f); }
 
 	Vec2F randomDir() {
-		int dir = rand() % 4;
-		switch (dir) {
-		case 0:
-			return Vec2F(0, 1); //up
-		case 1:
-			return Vec2F(0, -1); //down
-		case 2:
-			return Vec2F(1, 0); //right
-		case 3:
-			return Vec2F(-1, 0); //left
+		srand(time(NULL)); //Seed generator
+		switch (rand() % 4) {
+		case 0: return Vec2F(0, 1); //up
+		case 1: return Vec2F(0, -1); //down
+		case 2: return Vec2F(1, 0); //right
+		case 3: return Vec2F(-1, 0); //left
 		}
 	}
 private:

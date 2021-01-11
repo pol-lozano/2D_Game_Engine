@@ -82,9 +82,7 @@ public:
 					tr.y = floor((ty * TILE_SIZE) - visibleArea.y);
 
 					//Draw correct texture clip
-					drawSpriteClip(texture, ((BLOCK_LIST[_bl.id].tile.x + _bl.sub) * TILE_SIZE), ((BLOCK_LIST[_bl.id].tile.y) * TILE_SIZE), &tr);
-
-					
+					drawSpriteClip(texture, ((BLOCK_LIST[_bl.id].tile.x + _bl.sub) * TILE_SIZE), ((BLOCK_LIST[_bl.id].tile.y) * TILE_SIZE), &tr);				
 				}
 			}
 
@@ -119,7 +117,8 @@ public:
 			drawSpriteClip(texture, ((BLOCK_LIST[currentTile].tile.x) * TILE_SIZE), ((BLOCK_LIST[currentTile].tile.y) * TILE_SIZE), &tr);
 		} 
 	}
-	
+
+	//draw correct tile from tileset
 	inline void drawSpriteClip(SDL_Texture* tex, Uint16 srcX, Uint16 srcY, SDL_Rect* dstRect) {
 		SDL_Rect srcRect = { srcX, srcY, TILE_SIZE, TILE_SIZE };
 		SDL_RenderCopy(rTarget, texture, &srcRect, dstRect);

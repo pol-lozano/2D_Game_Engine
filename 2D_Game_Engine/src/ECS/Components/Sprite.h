@@ -15,15 +15,7 @@ public:
 
 		//Read texture size
 		SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
-		srcRect.x = 0;
-		srcRect.y = 0;
-		srcRect.w = size.x;
-		srcRect.h = size.y;
-		
-		dstRect.x = transform->position.x;
-		dstRect.y = transform->position.y;
-		dstRect.w = size.x * transform->scale.x;
-		dstRect.w = size.y * transform->scale.y;
+		srcRect = { 0, 0, size.x, size.y };
 	}
 
 	void update(double dt) override final {
@@ -45,19 +37,11 @@ public:
 	inline Vec2F getCenter() { return Vec2F((size.x * transform->scale.x) / 2, (size.y * transform->scale.y) / 2); }
 
 	//Set color
-	inline void setColor(Uint8 r, Uint8 g, Uint8 b) {
-		SDL_SetTextureColorMod(texture, r, g, b);
-	}
-
+	inline void setColor(Uint8 r, Uint8 g, Uint8 b) { SDL_SetTextureColorMod(texture, r, g, b); }
 	//Set alpha modulation
-	inline void setAlpha(Uint8 a) {
-		SDL_SetTextureAlphaMod(texture, a);
-	}
-
+	inline void setAlpha(Uint8 a) { SDL_SetTextureAlphaMod(texture, a); }
 	//Set blend mode
-	inline void setBlendMode(SDL_BlendMode mode) {
-		SDL_SetTextureBlendMode(texture, mode);
-	}
+	inline void setBlendMode(SDL_BlendMode mode) { SDL_SetTextureBlendMode(texture, mode); }
 
 private:
 	Transform* transform = nullptr;
@@ -69,6 +53,6 @@ private:
 	SDL_Rect srcRect = { 0, 0, 0, 0 };
 	SDL_Rect dstRect = { 0, 0, 0, 0 };
 
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	SDL_RendererFlip flip = SDL_RendererFlip::SDL_FLIP_NONE;
 };
 

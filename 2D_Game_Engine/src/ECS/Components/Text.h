@@ -35,15 +35,11 @@ public:
 		SDL_QueryTexture(texture, nullptr, nullptr, &dstRect.w, &dstRect.h);
 	}
 
+	inline void setTextPos(int x, int y) { position = { x, y }; }
 	inline void setFontColor(Uint8 r, Uint8 g, Uint8 b) { color = { r, g, b }; }
 
 	inline int getWidth() { return dstRect.w; }
 	inline int getHeight() { return dstRect.h; }
-
-	inline void setTextPos(int x, int y) {
-		position.x = x;
-		position.y = y;
-	}
 
 private:
 	SDL_Point position = { 0, 0 };

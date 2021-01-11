@@ -61,7 +61,7 @@ void AssetManager::clean() {
     IMG_Quit();
     TTF_Quit();
 
-    printf("Assets successfully cleaned!");
+    printf("Assets successfully cleaned!\n");
 }
 
 

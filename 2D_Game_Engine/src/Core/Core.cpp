@@ -40,7 +40,7 @@ void Core::init() {
 	renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 	if (!renderer) std::cerr << SDL_GetError() << std::endl;
 
-	//For gradients
+	//Set scaling method for gradients
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 
 	//Set blend mode
@@ -53,15 +53,15 @@ void Core::init() {
 	SDL_SetWindowMinimumSize(window, 640, 480);
 
 	//Set fullscreen
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	//Load media
 	AssetManager::get().loadTexture("tileset", "assets/tiles.png");
 	AssetManager::get().loadTexture("sky", "assets/sky.png");
 	AssetManager::get().loadTexture("test", "assets/player.png");
 	AssetManager::get().loadTexture("star", "assets/star.png");
-
 	AssetManager::get().loadFont("andy", "assets/andy.ttf", 16);
+	printf("\nAssets successfully loaded!\n");
 
 	//Create manager
 	manager = new EntityManager();
@@ -133,6 +133,7 @@ void Core::init() {
 
 	clearColor = DARK;
 	running = true;
+	printf("Game now running...\n");
 }
 
 void Core::events() {
@@ -140,6 +141,7 @@ void Core::events() {
 	while (SDL_PollEvent(event)) {
 		switch (event->type) {
 		case SDL_QUIT:
+			printf("Game now quitting...\n");
 			quit();
 			break;
 		case SDL_WINDOWEVENT:
@@ -149,7 +151,7 @@ void Core::events() {
 				SDL_GetRendererOutputSize(renderer, &display->w, &display->h);
 				camera->w = display->w;
 				camera->h = display->h;
-				printf("Changed screen size to : %d x %d\n", display->w, display->h);
+				printf("Screen size set to : %d x %d\n", display->w, display->h);
 				break;
 			}
 			break;
@@ -168,6 +170,7 @@ void Core::events() {
 }
 
 void Core::update(double dt) {
+	//Update entities and update ui
 	manager->refresh();
 	manager->update(dt);	
 	updateUI(dt);
@@ -179,19 +182,26 @@ void Core::update(double dt) {
 	setCamera(player);
 }
 
+void Core::render() {
+	//Clear screen
+	SDL_SetRenderDrawColor(renderer, clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+	SDL_RenderClear(renderer);
+
+	//Draw all entities to screen 
+	manager->draw();
+
+	//Update screen
+	SDL_RenderPresent(renderer);
+}
+
 double dirTimer = 3;
 //Check for collisions TODO: fix better collision system
 void Core::handleCollisions(double dt) {
-
 	auto& pT = player->getComponent<Transform>();
 	auto& pPos = pT.position;
-
 	auto& pCol = player->getComponent<BoxCollider2D>();
 	auto& box = pCol.getBox();
-
 	auto& tMap = tilemap->getComponent<Tilemap>();
-
-	Vec2F p;
 
 	dirTimer += dt;
 	//Randomly move pickups every 3 seconds
@@ -203,6 +213,9 @@ void Core::handleCollisions(double dt) {
 			}
 		}
 	}
+
+	//Collider penetration
+	Vec2F p;
 
 	//BOXCOLLIDER2D COLLISION
 	SDL_Rect overlap;
@@ -267,12 +280,9 @@ void Core::updateUI(double dt) {
 
 	std::stringstream ss2;
 	int pickupsAmount = player->getComponent<CharacterController2D>().getPickupsAmount();
-	if (pickupsAmount < 5) {
-		ss2 << "Pickups collected: " << pickupsAmount << "/5";
-	}
-	else {
-		ss2 << "You won!";
-	}
+	if (pickupsAmount < 5) ss2 << "Pickups collected: " << pickupsAmount << "/5";
+	else ss2 << "You won!";
+	
 	uiLabel->getComponent<Text>().setText(ss2.str());
 	uiLabel->getComponent<Text>().setTextPos(camera->w / 2 - uiLabel->getComponent<Text>().getWidth() / 2, 16);
 
@@ -294,18 +304,6 @@ void Core::setCamera(Entity* target) {
 	if (camera->y < 0) { camera->y = 0; }
 	if (camera->x > (CHUNK_SIZE * TILE_SIZE) - camera->w) { camera->x = (CHUNK_SIZE * TILE_SIZE) - camera->w; }
 	if (camera->y > (CHUNK_SIZE * TILE_SIZE) - camera->h) { camera->y = (CHUNK_SIZE * TILE_SIZE) - camera->h; }
-}
-
-void Core::render() {
-	//Clear screen
-	SDL_SetRenderDrawColor(renderer, clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-	SDL_RenderClear(renderer);
-
-	//Draw all entities to screen 
-	manager->draw();
-
-	//Update screen
-	SDL_RenderPresent(renderer);
 }
 
 void Core::clean() {
