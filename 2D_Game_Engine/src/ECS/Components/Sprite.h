@@ -28,8 +28,11 @@ public:
 		dstRect.y = static_cast<int>(transform->position.y) - visibleArea.y;
 	}
 
-	void draw() override final { 
-		SDL_RenderCopyEx(rTarget, texture, &srcRect, &dstRect, transform->rotation, NULL, flip); 
+	void draw() override final {
+		const SDL_Rect visibleArea = Core::get().getVisibleArea();
+		//Camera culling
+		if (SDL_HasIntersection(&visibleArea, &dstRect))
+			SDL_RenderCopyEx(rTarget, texture, &srcRect, &dstRect, transform->rotation, NULL, flip);
 	}
 
 	inline int getWidth() { return size.x; }

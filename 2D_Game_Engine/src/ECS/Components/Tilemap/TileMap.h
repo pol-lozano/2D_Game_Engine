@@ -50,9 +50,8 @@ public:
 	}
 
 	void draw() override final {
-		SDL_Rect tr {0, 0, TILE_SIZE, TILE_SIZE};
-
 		const SDL_Rect visibleArea = Core::get().getVisibleArea();
+		SDL_Rect tr {0, 0, TILE_SIZE, TILE_SIZE};
 
 		//Only draw all tiles that can be fully or partially seen.
 		int start_x = floor(visibleArea.x / TILE_SIZE);
