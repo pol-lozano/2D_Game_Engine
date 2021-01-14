@@ -16,8 +16,7 @@ struct Timer {
 		//Get cpu ticks per second, then calculate time between those ticks
 		static const Uint64 TICKS_PER_SECOND { SDL_GetPerformanceFrequency() };
 		elapsed_seconds = delta / static_cast<double>(TICKS_PER_SECOND);
-
 		//Cap delta time
-		if (elapsed_seconds > 1) elapsed_seconds = 0.016f;
+		if (elapsed_seconds > 1) elapsed_seconds = CYCLE_TIME;
 	}
 };
