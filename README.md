@@ -7,7 +7,8 @@ By Pol Lozano Llorens
 - Left MB - Place block
 - Right MB - Remove block
 - Middle MB - Copy block
-- 1-5 - Select block type to use
+- 1-7 - Select block type to use
+- ESC - Exit fullscreen mode
 
 # Features
 ## Hybrid ECS (similar to unity's) with components:
@@ -17,11 +18,12 @@ By Pol Lozano Llorens
 - Rigidbody2D (with basic physics simulation)
 - Sprite (with color, alpha and blend mode modulation)
 - Text 
-- TileMap (with bitmasking and basic lighting)
+- TileMap (with bitmasking and basic lighting, simple terrain generation based on randomstep and cellular automata)
 - Transform
 
 ## AssetManger 
 - Handles loading in textures and fonts, keeping track of them as well as cleaning up after the program ends.
+
 ## Physics and math classes 
 - Generic Vector2 class with vector math functions used for a basic physics engine.
 - Timer class with accurate delta time calculation with framecapping and V-Sync. 
