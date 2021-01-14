@@ -41,12 +41,11 @@ public:
 	void handleCollisions(double dt);
 
 	//CAMERA 
-	//Returns the area that the camera can see, For camera culling
 	void setCamera(Entity* target);
 	void updateUI(double dt);
 
+	//Returns the area that the camera can see, For camera culling
 	inline SDL_Rect getVisibleArea() { return SDL_Rect{ camera->x, camera->y, display->w, display->h }; }
-
 	inline int camToWorldX(int x) { return x + camera->x; }
 	inline int camToWorldY(int y) { return y + camera->y; }
 
