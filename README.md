@@ -2,6 +2,9 @@
 2D Game Engine C++ SDL2
 By Pol Lozano Llorens
 
+### Preview
+![Preview](Preview.png)
+
 ## Controls
 - WASD - Move
 - Left MB - Place block
@@ -18,7 +21,7 @@ By Pol Lozano Llorens
 - Rigidbody2D (with basic physics simulation)
 - Sprite (with color, alpha and blend mode modulation)
 - Text 
-- TileMap (with bitmasking and basic lighting, simple terrain generation based on randomstep and cellular automata)
+- TileMap (with bitmasking and basic lighting, simple terrain generation based on randomstep with uniform distribution and cellular automata)
 - Transform
 
 ## AssetManger 
